@@ -8,6 +8,11 @@ class Socket
 {
 
     /**
+     * @var bool Whether the protocol has been negotiated yet.
+     */
+    public $negotiated = false;
+
+    /**
      * The raw socket.
      *
      * @var resource
@@ -19,19 +24,19 @@ class Socket
      */
     protected $bufferSize;
 
+
     /**
      * Create and open the socket.
      *
      * @param string $hostname The hostname or IP address to connect to.
      * @param int $port The remote port.
-     * @param int $timeout The number of seconds before timeout, defaults to 30.
+     * @param int $timeout The number of seconds before timeout, defaults to 5.
      * @param int $bufferSize The number of bytes to buffer.
      *
      * @throws Exceptions\Socket If the socket cannot be opened.
      */
-    public function __construct($hostname, $port, $timeout = 30, $bufferSize = 4096)
+    public function __construct($hostname, $port, $timeout = 5, $bufferSize = 4096)
     {
-
         $this->rawSocket = @fsockopen($hostname, $port, $errNumber, $errMessage, $timeout);
         if ($this->rawSocket === false) {
             throw new Exception($errMessage, $errNumber);

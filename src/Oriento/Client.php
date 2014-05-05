@@ -56,7 +56,7 @@ class Client implements ConfigurableInterface
     public function getTransport()
     {
         if ($this->_transport === null) {
-            $this->createTransport();
+            $this->_transport = $this->createTransport();
         }
         return $this->_transport;
     }
@@ -93,7 +93,7 @@ class Client implements ConfigurableInterface
         }
         $transport->configure([
             'hostname' => $this->hostname,
-            'port' => $this->port,
+            'port' => 2424, //$this->port,
             'username' => $this->username,
             'password' => $this->password
         ]);

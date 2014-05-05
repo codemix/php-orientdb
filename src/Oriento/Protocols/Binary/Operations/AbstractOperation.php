@@ -19,7 +19,7 @@ abstract class AbstractOperation implements ConfigurableInterface
     /**
      * @var int The session id, if any.
      */
-    public $sessionId;
+    public $sessionId = -1;
 
 
     /**
@@ -57,7 +57,8 @@ abstract class AbstractOperation implements ConfigurableInterface
     {
         $status = $this->readByte();
         $sessionId = $this->readInt();
-        if ($status === 1) {
+        if ($status === chr(0x01)) {
+            $this->readByte(); // discard the first byte of the error
             $error = $this->readError();
             throw $error;
         }
@@ -70,6 +71,10 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     public function execute()
     {
+        if (!$this->socket->negotiated) {
+            $protocol = $this->readShort();
+            $this->socket->negotiated = true;
+        }
         $this->writeHeader();
         $this->write();
         $this->readHeader();
@@ -83,7 +88,7 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     protected function writeByte($value)
     {
-        $this->socket->write($value);
+        $this->socket->write(chr($value));
     }
 
     /**
@@ -93,7 +98,8 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     protected function readByte()
     {
-        return (int) $this->socket->read(1);
+        $value = $this->socket->read(1);
+        return $value;
     }
 
     /**
@@ -113,7 +119,7 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     protected function readShort()
     {
-        return $this->convertComplementShort(unpack('n', $this->socket->read(2))[0]);
+        return $this->convertComplementShort(unpack('n', $this->socket->read(2))[1]);
     }
 
     /**
@@ -133,7 +139,8 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     protected function readInt()
     {
-        return $this->convertComplementInt(unpack('N', $this->socket->read(4))[0]);
+        $value = unpack('N', $this->socket->read(4));
+        return $this->convertComplementInt(reset($value));
     }
 
 
@@ -144,7 +151,7 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     protected function writeLong($value)
     {
-        $this->socket->write( str_repeat(chr(0), 4).pack('N', $value));
+        $this->socket->write(str_repeat(chr(0), 4).pack('N', $value));
     }
 
     /**
@@ -233,7 +240,7 @@ abstract class AbstractOperation implements ConfigurableInterface
         $type = $this->readString();
         $message = $this->readString();
         $hasMore = $this->readByte();
-        if ($hasMore) {
+        if ($hasMore === chr(0x01)) {
             $next = $this->readError();
         }
         else {
