@@ -17,4 +17,18 @@ class ClientTest extends TestCase
     }
 
 
+    public function testExecute()
+    {
+        $client = new Client();
+        $client->configure([
+            'port' => 2525,
+            'transport' => 'binary'
+        ]);
+        $result = $client->execute('connect', [
+            'username' => 'root',
+            'password' => 'root'
+        ]);
+
+        echo "got ".$result."\n";
+    }
 }

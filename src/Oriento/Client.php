@@ -10,8 +10,6 @@ class Client implements ConfigurableInterface
 {
     use ConfigurableTrait;
 
-    const BINARY_TRANSPORT = 'Oriento\\Protocols\\Binary\\Transport';
-
     /**
      * @var string The server hostname.
      */
@@ -102,5 +100,10 @@ class Client implements ConfigurableInterface
         return $transport;
     }
 
+
+    public function execute($operation, array $params = array())
+    {
+        return $this->getTransport()->execute($operation, $params);
+    }
 
 }
