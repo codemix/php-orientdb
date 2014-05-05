@@ -1,3 +1,4 @@
+/ci/environment
 vendor
 .idea
 *.phar
