@@ -3,9 +3,20 @@
 namespace Oriento\Record;
 
 use Oriento\Common\Binary;
+use Oriento\Common\MagicInterface;
+use Oriento\Common\MagicTrait;
 
-class Bag implements \Countable, \ArrayAccess, \Traversable, \Iterator
+/**
+ *
+ * @property int $type
+ * @property int $size
+ *
+ * @package Oriento\Record
+ */
+class Bag implements \Countable, \ArrayAccess, \Traversable, \Iterator, MagicInterface
 {
+    use MagicTrait;
+
     const EMBEDDED = 0;
     const TREE = 1;
 
