@@ -11,4 +11,4 @@ watch:
 coverage:
 	@./vendor/bin/phpunit --coverage-html ./coverage
 
-.PHONY: test install install-composer
+.PHONY: test install install-composer coverage
