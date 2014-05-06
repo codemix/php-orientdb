@@ -13,7 +13,7 @@ use Orienta\Protocols\Common\TransportInterface;
 /**
  * Class Client
  *
- * @public @property \Orienta\Database\DatabaseList $databases
+ * @property \Orienta\Database\DatabaseList $databases
  *
  * @package Orienta
  */

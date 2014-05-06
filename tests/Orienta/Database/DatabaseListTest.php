@@ -8,7 +8,7 @@ class DatabaseListTest extends DbTestCase
 {
     public function testCreate()
     {
-        $db = $this->client->databases->create('orienta_clienttest_create', 'memory');
+        $db = $this->client->getDatabases()->create('orienta_clienttest_create', 'memory');
         $this->assertInstanceOf('Orienta\\Database\\Database', $db);
         $this->assertEquals('orienta_clienttest_create', $db->name);
     }
@@ -21,7 +21,7 @@ class DatabaseListTest extends DbTestCase
 
     public function testDrop()
     {
-        $ok = $this->client->databases->drop('orienta_clienttest_create', 'memory');
+        $ok = $this->client->getDatabases()->drop('orienta_clienttest_create', 'memory');
         $this->assertTrue($ok);
     }
 }
