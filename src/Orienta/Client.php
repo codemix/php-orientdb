@@ -7,8 +7,16 @@ use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
 use Orienta\Database\Database;
+use Orienta\Database\DatabaseList;
 use Orienta\Protocols\Common\TransportInterface;
 
+/**
+ * Class Client
+ *
+ * @public @property \Orienta\Database\DatabaseList $databases
+ *
+ * @package Orienta
+ */
 class Client implements ConfigurableInterface, MagicInterface
 {
     use ConfigurableTrait;
@@ -35,7 +43,7 @@ class Client implements ConfigurableInterface, MagicInterface
     public $password = 'root';
 
     /**
-     * @var Database[] The database objects.
+     * @var DatabaseList The database objects.
      */
     protected $databases;
 
@@ -127,15 +135,15 @@ class Client implements ConfigurableInterface, MagicInterface
      *
      * @param bool $reload Whether the list of databases should be reloaded from the server.
      *
-     * @return \Orienta\Database\Database[]
+     * @return \Orienta\Database\DatabaseList
      */
     public function getDatabases($reload = false)
     {
-        if ($this->databases === null || $reload) {
-            $this->databases = [];
-            foreach($this->execute('dbList')['databases'] as $key => $value) {
-                $this->databases[$key] = new Database($this, $key, $value);
-            }
+        if ($this->databases === null) {
+            $this->databases = new DatabaseList($this);
+        }
+        if ($reload) {
+            $this->databases->reload();
         }
         return $this->databases;
     }
@@ -159,57 +167,6 @@ class Client implements ConfigurableInterface, MagicInterface
         }
     }
 
-    /**
-     * Determine whether a database with the given name exists.
-     *
-     * @param string $name The database name.
-     * @param string $storage The database storage type, defaults to 'plocal'.
-     *
-     * @return boolean true if the database exists, otherwise false.
-     */
-    public function exists($name, $storage = 'plocal')
-    {
-        return $this->execute('dbExists', [
-            'database' => $name,
-            'storage' => $storage
-        ]);
-    }
 
-
-    /**
-     * Create a database with the given name.
-     *
-     * @param string $name The name of the database to create.
-     * @param string $storage The storage type for the database, e.g. 'memory' or 'plocal', defaults to 'plocal'.
-     * @param string $type The database type, defaults to 'graph'.
-     *
-     * @return Database The created database instance.
-     */
-    public function create($name, $storage = 'plocal', $type = 'graph')
-    {
-        $this->execute('dbCreate', [
-            'database' => $name,
-            'storage' => $storage,
-            'type' => $type,
-        ]);
-
-        return $this->getDatabase($name, true);
-    }
-
-    /**
-     * Drop the database with the given name.
-     *
-     * @param string $name The database name.
-     * @param string $storage The database storage type, defaults to 'plocal'.
-     *
-     * @return boolean True if the database was dropped.
-     */
-    public function drop($name, $storage = 'plocal')
-    {
-        return $this->execute('dbDrop', [
-            'database' => $name,
-            'storage' => $storage,
-        ]);
-    }
 
 }

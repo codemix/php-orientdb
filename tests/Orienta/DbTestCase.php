@@ -34,16 +34,16 @@ class DbTestCase extends TestCase implements MagicInterface
     protected function setUp()
     {
         $this->client = $this->createClient();
-        if ($this->client->exists($this->getDbName(), 'memory')) {
-            $this->client->drop($this->getDbName(), 'memory');
+        if ($this->client->getDatabases()->exists($this->getDbName(), 'memory')) {
+            $this->client->getDatabases()->drop($this->getDbName(), 'memory');
         }
-        $this->client->create($this->getDbName(), 'memory');
+        $this->client->getDatabases()->create($this->getDbName(), 'memory');
     }
 
     protected function tearDown()
     {
-        if ($this->client->exists($this->getDbName(), 'memory')) {
-            $this->client->drop($this->getDbName(), 'memory');
+        if ($this->client->getDatabases()->exists($this->getDbName(), 'memory')) {
+            $this->client->getDatabases()->drop($this->getDbName(), 'memory');
         }
     }
 

@@ -21,6 +21,11 @@ class Database implements ConfigurableInterface
     public $storage = 'plocal';
 
     /**
+     * @var string The database type.
+     */
+    public $type = 'graph';
+
+    /**
      * @var string The file id for the database.
      */
     public $fileId;
