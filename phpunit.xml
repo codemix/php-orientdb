@@ -3,13 +3,13 @@
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
 	<testsuites>
 		<testsuite name="Oriento Test Suite">
-			<directory>tests/Oriento/</directory>
+			<directory>tests/Orienta/</directory>
 		</testsuite>
 	</testsuites>
 
 	<filter>
 		<whitelist>
-			<directory suffix=".php">src/Oriento/</directory>
+			<directory suffix=".php">src/Orienta/</directory>
 		</whitelist>
 	</filter>
 </phpunit>
