@@ -15,6 +15,20 @@ class ClientTest extends TestCase
         $this->assertInstanceOf('Oriento\\Protocols\\Binary\\Transport', $transport);
     }
 
+    /**
+     * @expectedException \Oriento\Exceptions\Exception
+     */
+    public function testConnectWithBadCredentials()
+    {
+        $client = $this->createClient();
+        $sessionId = $client->execute('connect', [
+            'username' => $client->username,
+            'password' => 'thisisnottherightpassword!'
+        ]);
+
+        $this->assertGreaterThan(0, $sessionId);
+    }
+
     public function testConnect()
     {
         $client = $this->createClient();

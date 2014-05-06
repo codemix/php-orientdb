@@ -60,7 +60,7 @@ abstract class AbstractOperation implements ConfigurableInterface
     {
         $status = $this->readByte();
         $sessionId = $this->readInt();
-        if ($status === chr(0x01)) {
+        if ($status === 1) {
             $this->readByte(); // discard the first byte of the error
             $error = $this->readError();
             throw $error;
@@ -255,7 +255,7 @@ abstract class AbstractOperation implements ConfigurableInterface
         $type = $this->readString();
         $message = $this->readString();
         $hasMore = $this->readByte();
-        if ($hasMore === chr(0x01)) {
+        if ($hasMore === 1) {
             $next = $this->readError();
         }
         else {
