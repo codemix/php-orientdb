@@ -43,7 +43,6 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
         $this->database = $database;
     }
 
-
     /**
      * Gets the Record ID
      * @return \Orienta\Record\ID
@@ -51,6 +50,16 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Determine whether the record is new and yet to be saved.
+     *
+     * @return bool true if the record is new, otherwise false.
+     */
+    public function getIsNew()
+    {
+        return $this->id === null;
     }
 
     /**
