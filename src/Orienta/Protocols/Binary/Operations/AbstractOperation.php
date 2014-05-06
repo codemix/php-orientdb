@@ -101,8 +101,27 @@ abstract class AbstractOperation implements ConfigurableInterface
      */
     protected function readByte()
     {
-        $value = $this->socket->read(1);
-        return Binary::unpackByte($value);
+        return Binary::unpackByte($this->socket->read(1));
+    }
+
+    /**
+     * Write a character to the socket.
+     *
+     * @param string $value
+     */
+    protected function writeChar($value)
+    {
+        $this->socket->write(Binary::packByte(ord($value)));
+    }
+
+    /**
+     * Read a character from the socket.
+     *
+     * @return int the character read
+     */
+    protected function readChar()
+    {
+        return chr(Binary::unpackByte($this->socket->read(1)));
     }
 
     /**
@@ -274,6 +293,55 @@ abstract class AbstractOperation implements ConfigurableInterface
     {
         $serialized = $this->readString();
         return Deserializer::deserialize($serialized);
+    }
+
+    /**
+     * Read a record from the remote server.
+     *
+     * @return array
+     * @throws \Orienta\Exceptions\Exception
+     */
+    protected function readRecord()
+    {
+        $classId = $this->readShort();
+        $record = ['classId' => $classId];
+
+        if ($classId === -1) {
+            throw new Exception('No class for record, cannot proceed!');
+        }
+        else if ($classId === -2) {
+            // null record
+            $record['value'] = null;
+        }
+        else if ($classId === -3) {
+            // reference
+            $record['type'] = 'd';
+            $record['cluster'] = $this->readShort();
+            $record['position'] = $this->readLong();
+        }
+        else {
+            $record['type'] = $this->readChar();
+            $record['cluster'] = $this->readShort();
+            $record['position'] = $this->readLong();
+            $record['version'] = $this->readInt();
+            $record['value'] = $this->readSerialized();
+        }
+        return $record;
+    }
+
+    /**
+     * Read a collection of records from the remote server.
+     *
+     * @return array
+     */
+    protected function readCollection()
+    {
+        $records = [];
+        $total = $this->readInt();
+        for ($i = 0; $i < $total; $i++) {
+            $records[] = $this->readRecord();
+        }
+        return $records;
     }
 
 
