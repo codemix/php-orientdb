@@ -81,7 +81,7 @@ class DbOpen extends AbstractOperation
         return [
             'sessionId' => $sessionId,
             'clusters' => $clusters,
-            'servers' => $this->readString(),
+            'servers' => $this->readSerialized(),
             'release' => $this->readString()
 
         ];
