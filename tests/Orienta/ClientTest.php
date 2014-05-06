@@ -11,6 +11,12 @@ class ClientTest extends DbTestCase
         $this->assertEquals('orienta_clienttest_create', $db->name);
     }
 
+    public function testDropDatabase()
+    {
+        $ok = $this->client->drop('orienta_clienttest_create', 'memory');
+        $this->assertTrue($ok);
+    }
+
     public function testGetDatabases()
     {
         $dbs = $this->client->getDatabases();
