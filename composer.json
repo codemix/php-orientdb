@@ -20,6 +20,6 @@
     "phpunit/phpunit": "~3.7.0"
   },
   "autoload": {
-    "psr-4": {"Oriento\\": "src/Orienta"}
+    "psr-4": {"Orienta\\": "src/Orienta"}
   }
 }
