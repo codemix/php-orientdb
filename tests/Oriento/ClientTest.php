@@ -42,6 +42,29 @@ class ClientTest extends TestCase
         $this->assertGreaterThan(0, count($result['databases']));
     }
 
+    public function testDbExists()
+    {
+        $client = $this->createClient();
+        $sessionId = $client->execute('connect', [
+            'username' => $client->username,
+            'password' => $client->password
+        ]);
+
+        $result = $client->execute('dbExists', [
+            'sessionId' => $sessionId,
+            'database' => 'GratefulDeadConcerts'
+        ]);
+
+        $this->assertTrue($result);
+
+        $result = $client->execute('dbExists', [
+            'sessionId' => $sessionId,
+            'database' => 'missing_db'
+        ]);
+
+        $this->assertFalse($result);
+    }
+
     public function testDbOpen()
     {
         $client = $this->createClient();
