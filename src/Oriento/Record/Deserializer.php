@@ -413,7 +413,7 @@ class Deserializer
      *
      * @return array The collected record and any remaining content.
      */
-    public static function eatRecord($input)
+    protected static function eatRecord($input)
     {
         $record = [
             '@type' => 'd',
