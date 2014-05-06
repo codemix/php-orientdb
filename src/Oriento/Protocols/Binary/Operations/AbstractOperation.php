@@ -106,6 +106,27 @@ abstract class AbstractOperation implements ConfigurableInterface
     }
 
     /**
+     * Write a boolean to the socket.
+     *
+     * @param bool $value
+     */
+    protected function writeBoolean($value)
+    {
+        $this->socket->write(Binary::packByte((bool) $value));
+    }
+
+    /**
+     * Read a boolean from the socket.
+     *
+     * @return bool the boolean read
+     */
+    protected function readBoolean()
+    {
+        $value = $this->socket->read(1);
+        return (bool) Binary::unpackByte($value);
+    }
+
+    /**
      * Write a short to the socket.
      *
      * @param int $value
