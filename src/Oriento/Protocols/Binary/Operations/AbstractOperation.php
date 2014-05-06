@@ -8,6 +8,7 @@ use Oriento\Common\ConfigurableTrait;
 use Oriento\Common\Math;
 use Oriento\Exceptions\Exception;
 use Oriento\Protocols\Binary\Socket;
+use Oriento\Record\Deserializer;
 
 abstract class AbstractOperation implements ConfigurableInterface
 {
@@ -240,6 +241,17 @@ abstract class AbstractOperation implements ConfigurableInterface
             $javaStackTrace = $this->readBytes();
         }
         return new Exception($type.': '.$message);
+    }
+
+    /**
+     * Read a serialized object from the remote server.
+     *
+     * @return mixed
+     */
+    protected function readSerialized()
+    {
+        $serialized = $this->readString();
+        return Deserializer::deserialize($serialized);
     }
 
 
