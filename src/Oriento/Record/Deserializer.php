@@ -19,9 +19,7 @@ class Deserializer
             return null;
         }
 
-        $record = [
-            '@type' => 'd',
-        ];
+        $record = [];
 
         $chunk = self::eatFirstKey($input);
         if ($chunk[2]) {
@@ -415,9 +413,7 @@ class Deserializer
      */
     protected static function eatRecord($input)
     {
-        $record = [
-            '@type' => 'd',
-        ];
+        $record = [];
 
         $input = ltrim($input, ' ');
         if ($input[0] === ')') {
