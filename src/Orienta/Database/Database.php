@@ -5,6 +5,7 @@ namespace Orienta\Database;
 use Orienta\Client;
 use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
+use Orienta\Query\Sync;
 
 class Database implements ConfigurableInterface
 {
@@ -76,7 +77,43 @@ class Database implements ConfigurableInterface
      */
     public function execute($operation, array $params = array())
     {
+        if ($this->sessionId === null || $this->sessionId === -1) {
+            $this->open();
+        }
         $params['sessionId'] = $this->sessionId;
         return $this->client->execute($operation, $params);
+    }
+
+    /**
+     * Open the database.
+     */
+    protected function open()
+    {
+        $response = $this->client->execute('dbOpen', [
+            'database' => $this->name,
+            'type' => $this->type,
+            'username' => $this->username,
+            'password' => $this->password
+        ]);
+        $this->sessionId = $response['sessionId'];
+    }
+
+    /**
+     * @param string $query The query text.
+     * @param array $params The query parameters.
+     *
+     * @return mixed The result of the query
+     */
+    public function query($query, array $params = [])
+    {
+        if (!is_object($query)) {
+            $query = Sync::fromConfig([
+                'text' => $query,
+                'params' => $params
+            ]);
+        }
+        return $this->execute('command', [
+            'query' => $query
+        ]);
     }
 }
