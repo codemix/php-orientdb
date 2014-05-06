@@ -261,6 +261,7 @@ abstract class AbstractOperation implements ConfigurableInterface
         else {
             $javaStackTrace = $this->readBytes();
         }
+
         return new Exception($type.': '.$message);
     }
 

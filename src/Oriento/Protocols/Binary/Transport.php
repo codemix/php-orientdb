@@ -3,6 +3,10 @@
 namespace Oriento\Protocols\Binary;
 
 use Oriento\Protocols\Binary\Operations\AbstractOperation;
+use Oriento\Protocols\Binary\Operations\Connect;
+use Oriento\Protocols\Binary\Operations\DbExists;
+use Oriento\Protocols\Binary\Operations\DbList;
+use Oriento\Protocols\Binary\Operations\DbOpen;
 use Oriento\Protocols\Common\AbstractTransport;
 
 class Transport extends AbstractTransport
@@ -11,6 +15,11 @@ class Transport extends AbstractTransport
      * @var Socket the connected socket.
      */
     protected $socket;
+
+    /**
+     * @var int The session id for the connection.
+     */
+    protected $sessionId;
 
     /**
      * Gets the Socket, and establishes the connection if required.
@@ -36,7 +45,27 @@ class Transport extends AbstractTransport
      */
     public function execute($operation, array $params = array())
     {
-        return $this->createOperation($operation, $params)->execute();
+        $op = $this->createOperation($operation, $params);
+        if ((!isset($params['sessionId']) || $params['sessionId'] === -1)
+            && !($op instanceof DbOpen)
+            && !($op instanceof Connect)
+        ) {
+            if (!isset($this->sessionId)) {
+                $this->authenticate();
+            }
+            $params['sessionId'] = $this->sessionId;
+            $op->sessionId = $this->sessionId;
+        }
+        return $op->execute();
+    }
+
+    protected function authenticate()
+    {
+        $op = $this->createOperation('connect', [
+            'username' => $this->username,
+            'password' => $this->password
+        ]);
+        $this->sessionId = $op->execute();
     }
 
     /**
