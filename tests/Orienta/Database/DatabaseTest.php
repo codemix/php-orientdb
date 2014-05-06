@@ -18,6 +18,11 @@ class DatabaseTest extends DbTestCase
     }
 
 
+    public function testClusters()
+    {
+        $this->assertGreaterThan(3, count($this->db->getClusters()));
+    }
+
     public function testQuery()
     {
         $results = $this->db->query('SELECT * FROM OUser');

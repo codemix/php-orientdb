@@ -3,10 +3,18 @@
 namespace Orienta\Database;
 
 use Orienta\Client;
+use Orienta\Cluster\ClusterList;
 use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Query\Sync;
 
+/**
+ * # Database
+ *
+ * @property ClusterList $clusters
+ *
+ * @package Orienta\Database
+ */
 class Database implements ConfigurableInterface
 {
     use ConfigurableTrait;
@@ -53,6 +61,11 @@ class Database implements ConfigurableInterface
     protected $sessionId = -1;
 
     /**
+     * @var ClusterList A list of clusters in the database.
+     */
+    protected $clusters;
+
+    /**
      * @param Client $client The client the database belongs to.
      * @param string $name The name of the database
      * @param string|null $locationString The location string for the database.
@@ -64,6 +77,18 @@ class Database implements ConfigurableInterface
         if ($locationString !== null) {
             list($this->storage, $this->fileId) = explode(':', $locationString);
         }
+    }
+
+    /**
+     * Gets the Clusters
+     * @return \Orienta\Cluster\ClusterList
+     */
+    public function getClusters()
+    {
+        if ($this->clusters === null) {
+            $this->open();
+        }
+        return $this->clusters;
     }
 
 
@@ -96,6 +121,7 @@ class Database implements ConfigurableInterface
             'password' => $this->password
         ]);
         $this->sessionId = $response['sessionId'];
+        $this->clusters = new ClusterList($this, $response['clusters']);
     }
 
     /**

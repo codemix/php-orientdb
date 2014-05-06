@@ -174,7 +174,7 @@ class DatabaseList implements MapInterface
      * The offset to retrieve.
      * </p>
      *
-     * @return mixed Can return all value types.
+     * @return Database|null Can return all value types.
      */
     public function offsetGet($offset)
     {
