@@ -26,6 +26,22 @@ class ClientTest extends TestCase
         $this->assertGreaterThan(0, $sessionId);
     }
 
+    public function testDbList()
+    {
+        $client = $this->createClient();
+        $sessionId = $client->execute('connect', [
+            'username' => $client->username,
+            'password' => $client->password
+        ]);
+
+        $result = $client->execute('dbList', [
+           'sessionId' => $sessionId
+        ]);
+
+        $this->assertArrayHasKey('databases', $result);
+        $this->assertGreaterThan(0, count($result['databases']));
+    }
+
     public function testDbOpen()
     {
         $client = $this->createClient();
