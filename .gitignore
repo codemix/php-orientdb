@@ -1,4 +1,5 @@
 /ci/environment
+coverage
 vendor
 .idea
 *.phar
