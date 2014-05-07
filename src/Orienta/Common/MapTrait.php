@@ -36,7 +36,7 @@ trait MapTrait
      */
     public function __get($name)
     {
-        if (array_key_exists($this->items, $name)) {
+        if (array_key_exists($name, $this->items)) {
             return $this->items[$name];
         }
         else {
