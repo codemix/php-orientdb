@@ -24,4 +24,11 @@ class ClusterTest extends DbTestCase
         $this->assertGreaterThan(2, $this->cluster->count());
     }
 
+    public function testLoad()
+    {
+        $result = $this->cluster->load(0);
+        $this->assertInstanceOf('Orienta\Record\Document', $result);
+        $this->assertEquals('admin', $result->name);
+    }
+
 }

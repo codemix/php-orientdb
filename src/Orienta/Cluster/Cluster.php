@@ -64,4 +64,14 @@ class Cluster implements ConfigurableInterface, \Countable
     }
 
 
+    public function load($position, $fetchPlan = '')
+    {
+        $result = $this->database->execute('recordLoad', [
+            'cluster' => $this->id,
+            'position' => $position,
+            'fetchPlan' => ''
+        ]);
+        return $result;
+    }
+
 }
