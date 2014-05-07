@@ -53,6 +53,18 @@ class ClusterList implements MapInterface
     }
 
     /**
+     * Determine whether a cluster with the given name exists.
+     *
+     * @param string $name The name of the cluster to check.
+     *
+     * @return bool true if the cluster exists.
+     */
+    public function exists($name)
+    {
+        return isset($this->items[$name]);
+    }
+
+    /**
      * Delete a cluster with the given id.
      *
      * @param Cluster|int $id The cluster instance or id.
