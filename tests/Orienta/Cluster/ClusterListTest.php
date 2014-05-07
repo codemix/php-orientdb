@@ -14,9 +14,11 @@ class ClusterListTest extends DbTestCase
         $this->assertEquals('mycluster', $result->name);
         $this->assertEquals($count + 1, $this->db->clusters->count());
 
+        $this->assertTrue(isset($this->db->clusters->mycluster));
         $cluster = $this->db->clusters->mycluster;
         $this->db->clusters->drop($cluster);
-        $this->assertObjectNotHasAttribute('mycluster', $this->db->clusters);
+
+        $this->assertFalse(isset($this->db->clusters->mycluster));
     }
 
     public function testIterator()
