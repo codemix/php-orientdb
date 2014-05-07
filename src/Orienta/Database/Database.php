@@ -122,6 +122,7 @@ class Database implements ConfigurableInterface, MagicInterface
             $this->open();
         }
         $params['sessionId'] = $this->sessionId;
+        $params['database'] = $this;
         return $this->client->execute($operation, $params);
     }
 

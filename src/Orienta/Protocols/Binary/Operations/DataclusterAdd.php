@@ -2,7 +2,7 @@
 
 namespace Orienta\Protocols\Binary\Operations;
 
-class DataclusterAdd extends AbstractOperation
+class DataclusterAdd extends AbstractDbOperation
 {
     /**
      * @var int The op code.

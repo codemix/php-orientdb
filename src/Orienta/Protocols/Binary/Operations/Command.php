@@ -5,7 +5,7 @@ namespace Orienta\Protocols\Binary\Operations;
 use Orienta\Exceptions\Exception;
 use Orienta\Query\QueryInterface;
 
-class Command extends AbstractOperation
+class Command extends AbstractDbOperation
 {
     /**
      * @var int The op code.
