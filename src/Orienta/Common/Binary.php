@@ -122,7 +122,12 @@ class Binary
      */
     public static function packString($value)
     {
-        return self::packInt(strlen($value)).$value;
+        if ($value === null) {
+            return self::packInt(-1);
+        }
+        else {
+            return self::packInt(strlen($value)).$value;
+        }
     }
 
     /**
@@ -156,7 +161,12 @@ class Binary
      */
     public static function packBytes($value)
     {
-        return self::packInt(strlen($value)).$value;
+        if ($value === null) {
+            return self::packInt(-1);
+        }
+        else {
+            return self::packInt(strlen($value)).$value;
+        }
     }
 
     /**
