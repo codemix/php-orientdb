@@ -13,9 +13,7 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
 {
     use ConfigurableTrait;
 
-    use MagicTrait {
-        __call as __call;
-    }
+    use MagicTrait;
 
     /**
      * @var ID The record id.
@@ -23,14 +21,24 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
     protected $id;
 
     /**
+     * @var string The name of the class this record refers to.
+     */
+    protected $class;
+
+    /**
+     * @var int The record version.
+     */
+    protected $version = 0;
+
+    /**
      * @var Database The database the record belongs to.
      */
     protected $database;
 
     /**
-     * @var array The record attributes.
+     * @var string The raw bytes that make up the record.
      */
-    protected $attributes = [];
+    protected $bytes;
 
     /**
      * # Constructor
@@ -41,6 +49,7 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
     public function __construct(Database $database, array $config = [])
     {
         $this->database = $database;
+        $this->configure($config);
     }
 
     /**
@@ -51,6 +60,109 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
     {
         return $this->id;
     }
+
+    /**
+     * Sets the Id
+     *
+     * @param \Orienta\Record\ID $id
+     *
+     * @return $this the current object
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * Sets the Bytes
+     *
+     * @param string $bytes
+     *
+     * @return $this the current object
+     */
+    public function setBytes($bytes)
+    {
+        $this->bytes = $bytes;
+        return $this;
+    }
+
+    /**
+     * Gets the Bytes
+     * @return string
+     */
+    public function getBytes()
+    {
+        return $this->bytes;
+    }
+
+    /**
+     * Sets the Class
+     *
+     * @param string $class
+     *
+     * @return $this the current object
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+        return $this;
+    }
+
+    /**
+     * Gets the Class
+     * @return string
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Sets the Database
+     *
+     * @param \Orienta\Database\Database $database
+     *
+     * @return $this the current object
+     */
+    public function setDatabase($database)
+    {
+        $this->database = $database;
+        return $this;
+    }
+
+    /**
+     * Gets the Database
+     * @return \Orienta\Database\Database
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
+     * Sets the Version
+     *
+     * @param int $version
+     *
+     * @return $this the current object
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    /**
+     * Gets the Version
+     * @return int
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+
 
     /**
      * Determine whether the record is new and yet to be saved.
@@ -92,64 +204,5 @@ class Record implements SerializableInterface, \JsonSerializable, ConfigurableIn
 
         return array_merge($meta, $this->attributes);
     }
-
-    /**
-     * Get a virtual property.
-     *
-     * @param string $name The name of the virtual property to get.
-     *
-     * @return mixed The value of the property.
-     * @throws \OutOfBoundsException If no such property exists.
-     */
-    public function __get($name)
-    {
-        if (array_key_exists($name, $this->attributes)) {
-            return $this->attributes[$name];
-        }
-
-        $getter = 'get'.$name;
-        if (method_exists($this, $getter)) {
-            return $this->{$getter}();
-        }
-        else {
-            throw new \OutOfBoundsException(get_called_class().' does not have a property called "'.$name.'"');
-        }
-    }
-
-    /**
-     * Set a virtual property value.
-     *
-     * @param string $name The name of the virtual property to set.
-     * @param mixed $value The value of the virtual property.
-     *
-     * @throws \OutOfBoundsException If no such property exists.
-     */
-    public function __set($name, $value)
-    {
-        $this->attributes[$name] = $value;
-    }
-
-    /**
-     * Determine whether a virtual property with the given name exists.
-     *
-     * @param string $name The name of the virtual property to check.
-     *
-     * @return bool The value of the property.
-     */
-    public function __isset($name)
-    {
-        return isset($this->attributes[$name]);
-    }
-
-    /**
-     * Unset the virtual property with the given name.
-     *
-     * @param string $name The name of the virtual property to unset.
-     */
-    public function __unset($name)
-    {
-        unset($this->attributes[$name]);
-    }
-
 
 }
