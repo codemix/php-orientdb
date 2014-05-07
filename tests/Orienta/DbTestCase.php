@@ -4,6 +4,7 @@ namespace Orienta;
 
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
+use Orienta\Database\Database;
 
 class DbTestCase extends TestCase implements MagicInterface
 {
@@ -13,6 +14,11 @@ class DbTestCase extends TestCase implements MagicInterface
      * @var Client
      */
     public $client;
+
+    /**
+     * @var Database
+     */
+    public $db;
 
     /**
      * @var string
@@ -38,6 +44,7 @@ class DbTestCase extends TestCase implements MagicInterface
             $this->client->getDatabases()->drop($this->getDbName(), 'memory');
         }
         $this->client->getDatabases()->create($this->getDbName(), 'memory');
+        $this->db = $this->client->getDatabase($this->getDbName());
     }
 
     protected function tearDown()

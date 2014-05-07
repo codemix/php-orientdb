@@ -3,9 +3,12 @@
 namespace Orienta\Database;
 
 use Orienta\Client;
+use Orienta\Cluster\Cluster;
 use Orienta\Cluster\ClusterList;
 use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
+use Orienta\Common\MagicInterface;
+use Orienta\Common\MagicTrait;
 use Orienta\Query\Sync;
 
 /**
@@ -15,9 +18,10 @@ use Orienta\Query\Sync;
  *
  * @package Orienta\Database
  */
-class Database implements ConfigurableInterface
+class Database implements ConfigurableInterface, MagicInterface
 {
     use ConfigurableTrait;
+    use MagicTrait;
 
     /**
      * @var string The name of the database.
@@ -89,6 +93,18 @@ class Database implements ConfigurableInterface
             $this->open();
         }
         return $this->clusters;
+    }
+
+    /**
+     * Get the cluster with the given name.
+     *
+     * @param string $name The name of the cluster to get.
+     *
+     * @return Cluster The cluster instance.
+     */
+    public function getCluster($name)
+    {
+        return $this->getClusters()->offsetGet($name);
     }
 
 

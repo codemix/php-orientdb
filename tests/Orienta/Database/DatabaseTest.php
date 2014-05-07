@@ -6,21 +6,17 @@ use Orienta\DbTestCase;
 
 class DatabaseTest extends DbTestCase
 {
-    /**
-     * @var Database
-     */
-    public $db;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->db = $this->client->getDatabase($this->getDbName());
-    }
-
 
     public function testClusters()
     {
         $this->assertGreaterThan(3, count($this->db->getClusters()));
+    }
+
+    public function testGetCluster()
+    {
+        $cluster = $this->db->getCluster('ouser');
+        $this->assertEquals($cluster, $this->db->clusters->ouser);
+        $this->assertEquals('ouser', $cluster->name);
     }
 
     public function testQuery()
