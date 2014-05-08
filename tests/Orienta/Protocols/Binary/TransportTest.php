@@ -15,7 +15,7 @@ class TransportTest extends TestCase
             'transport' => 'binary'
         ]);
         $transport = $client->getTransport();
-        $this->assertInstanceOf('Orienta\\Protocols\\Binary\\Transport', $transport);
+        $this->assertInstanceOf('Orienta\Protocols\Binary\Transport', $transport);
     }
 
     /**

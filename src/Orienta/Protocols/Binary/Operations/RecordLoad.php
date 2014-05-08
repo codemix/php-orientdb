@@ -3,10 +3,10 @@
 namespace Orienta\Protocols\Binary\Operations;
 
 use Orienta\Exceptions\Exception;
-use Orienta\Record\Deserializer;
-use Orienta\Record\Document;
-use Orienta\Record\ID;
-use Orienta\Record\Record;
+use Orienta\Records\Deserializer;
+use Orienta\Records\Document;
+use Orienta\Records\ID;
+use Orienta\Records\Record;
 
 class RecordLoad extends AbstractDbOperation
 {

@@ -10,6 +10,6 @@ class ClientTest extends DbTestCase
     {
         $dbs = $this->client->getDatabases();
         $this->assertArrayHasKey('orienta_clienttest', $dbs);
-        $this->assertInstanceOf('Orienta\\Database\\Database', $dbs['orienta_clienttest']);
+        $this->assertInstanceOf('Orienta\Databases\Database', $dbs['orienta_clienttest']);
     }
 }

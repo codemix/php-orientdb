@@ -78,7 +78,7 @@ class Transport extends AbstractTransport
     {
         if (!($operation instanceof AbstractOperation)) {
             if (!strstr($operation, '\\')) {
-                $operation = 'Orienta\\Protocols\\Binary\\Operations\\'.ucfirst($operation);
+                $operation = 'Orienta\Protocols\Binary\Operations\\'.ucfirst($operation);
             }
             $operation = new $operation();
         }

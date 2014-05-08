@@ -6,14 +6,14 @@ use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
-use Orienta\Database\Database;
-use Orienta\Database\DatabaseList;
+use Orienta\Databases\Database;
+use Orienta\Databases\DatabaseList;
 use Orienta\Protocols\Common\TransportInterface;
 
 /**
  * Class Client
  *
- * @property \Orienta\Database\DatabaseList $databases
+ * @property \Orienta\Databases\DatabaseList $databases
  *
  * @package Orienta
  */
@@ -101,7 +101,7 @@ class Client implements ConfigurableInterface, MagicInterface
                 unset($transport['class']);
             }
             else {
-                $className = 'Orienta\\Protocols\\Binary\\Transport';
+                $className = 'Orienta\Protocols\Binary\Transport';
             }
             $transport = new $className();
         }
@@ -135,7 +135,7 @@ class Client implements ConfigurableInterface, MagicInterface
      *
      * @param bool $reload Whether the list of databases should be reloaded from the server.
      *
-     * @return \Orienta\Database\DatabaseList
+     * @return \Orienta\Databases\DatabaseList
      */
     public function getDatabases($reload = false)
     {

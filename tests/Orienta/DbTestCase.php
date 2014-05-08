@@ -4,7 +4,7 @@ namespace Orienta;
 
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
-use Orienta\Database\Database;
+use Orienta\Databases\Database;
 
 class DbTestCase extends TestCase implements MagicInterface
 {
