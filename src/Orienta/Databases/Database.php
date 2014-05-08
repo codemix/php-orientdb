@@ -3,8 +3,8 @@
 namespace Orienta\Database;
 
 use Orienta\Client;
-use Orienta\Cluster\Cluster;
-use Orienta\Cluster\ClusterList;
+use Orienta\Clusters\Cluster;
+use Orienta\Clusters\ClusterList;
 use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
@@ -91,7 +91,7 @@ class Database implements ConfigurableInterface, MagicInterface
 
     /**
      * Gets the Clusters
-     * @return \Orienta\Cluster\ClusterList
+     * @return \Orienta\Clusters\ClusterList
      */
     public function getClusters()
     {

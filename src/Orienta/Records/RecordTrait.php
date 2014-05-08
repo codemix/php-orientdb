@@ -4,7 +4,7 @@
 namespace Orienta\Record;
 
 use Orienta\Common\MagicTrait;
-use Orienta\Database\Database;
+use Orienta\Databases\Database;
 
 trait RecordTrait
 {
@@ -129,7 +129,7 @@ trait RecordTrait
     /**
      * Sets the Database
      *
-     * @param \Orienta\Database\Database $database
+     * @param \Orienta\Databases\Database $database
      *
      * @return $this the current object
      */
@@ -141,7 +141,7 @@ trait RecordTrait
 
     /**
      * Gets the Database
-     * @return \Orienta\Database\Database
+     * @return \Orienta\Databases\Database
      */
     public function getDatabase()
     {

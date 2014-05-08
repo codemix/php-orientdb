@@ -4,7 +4,7 @@ namespace Orienta\Record;
 
 use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
-use Orienta\Database\Database;
+use Orienta\Databases\Database;
 
 class Record implements RecordInterface, ConfigurableInterface
 {
