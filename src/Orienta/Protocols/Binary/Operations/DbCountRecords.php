@@ -2,7 +2,7 @@
 
 namespace Orienta\Protocols\Binary\Operations;
 
-class DbCountRecords extends AbstractOperation
+class DbCountRecords extends AbstractDbOperation
 {
     /**
      * @var int The op code.
@@ -15,11 +15,17 @@ class DbCountRecords extends AbstractOperation
     public $sessionId = -1;
 
     /**
+     * @var string The database storage type.
+     */
+    public $storage = 'plocal';
+
+    /**
      * Write the data to the socket.
      */
     protected function write()
     {
-        //nothing else to write but the header
+        $this->writeString($this->database->name);
+        $this->writeString($this->storage);
     }
 
     /**

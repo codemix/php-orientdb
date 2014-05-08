@@ -10,7 +10,7 @@ class DbDrop extends AbstractOperation
     public $opCode = 7;
 
     /**
-     * @var string The name of the database to dop.
+     * @var string The name of the database to drop.
      */
     public $database;
 
