@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Query;
+namespace Orienta\Queries;
 
 use Orienta\Common\Binary;
 

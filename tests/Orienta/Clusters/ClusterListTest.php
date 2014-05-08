@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Cluster;
+namespace Orienta\Clusters;
 
 use Orienta\DbTestCase;
 
@@ -12,7 +12,7 @@ class ClusterListTest extends DbTestCase
 
         $count = $this->db->clusters->count();
         $result = $this->db->clusters->create('mycluster', 'MEMORY', ['type' => 'MEMORY']);
-        $this->assertInstanceOf('Orienta\Cluster\Cluster', $result);
+        $this->assertInstanceOf('Orienta\Clusters\Cluster', $result);
         $this->assertEquals('mycluster', $result->name);
         $this->assertEquals($count + 1, $this->db->clusters->count());
 
@@ -30,7 +30,7 @@ class ClusterListTest extends DbTestCase
     {
         $this->assertGreaterThan(0, count($this->db->clusters));
         foreach($this->db->clusters as $key => $value) {
-            $this->assertInstanceOf('Orienta\Cluster\Cluster', $value);
+            $this->assertInstanceOf('Orienta\Clusters\Cluster', $value);
         }
     }
 

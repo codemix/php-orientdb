@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Query;
+namespace Orienta\Queries;
 
 
 use Orienta\Common\Binary;
@@ -8,7 +8,7 @@ use Orienta\Common\Binary;
 /**
  * # Synchronous Query
  *
- * @package Orienta\Query
+ * @package Orienta\Queries
  */
 class Sync extends AbstractQuery
 {

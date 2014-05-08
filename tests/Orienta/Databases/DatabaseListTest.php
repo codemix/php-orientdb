@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Database;
+namespace Orienta\Databases;
 
 use Orienta\DbTestCase;
 
@@ -9,7 +9,7 @@ class DatabaseListTest extends DbTestCase
     public function testCreate()
     {
         $db = $this->client->getDatabases()->create('orienta_clienttest_create', 'memory');
-        $this->assertInstanceOf('Orienta\\Database\\Database', $db);
+        $this->assertInstanceOf('Orienta\Databases\Database', $db);
         $this->assertEquals('orienta_clienttest_create', $db->name);
     }
 

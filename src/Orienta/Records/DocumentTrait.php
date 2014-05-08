@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Record;
+namespace Orienta\Records;
 
 trait DocumentTrait
 {

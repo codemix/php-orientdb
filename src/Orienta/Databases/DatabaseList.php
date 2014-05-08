@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Database;
+namespace Orienta\Databases;
 
 use Orienta\Client;
 use Orienta\Common\MapInterface;

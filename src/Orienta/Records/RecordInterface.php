@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Record;
+namespace Orienta\Records;
 
 use Orienta\Common\MagicInterface;
 
@@ -8,14 +8,14 @@ interface RecordInterface extends SerializableInterface, \JsonSerializable, Magi
 {
     /**
      * Gets the Record ID
-     * @return \Orienta\Record\ID
+     * @return \Orienta\Records\ID
      */
     public function getId();
 
     /**
      * Sets the Id
      *
-     * @param \Orienta\Record\ID $id
+     * @param \Orienta\Records\ID $id
      *
      * @return $this the current object
      */

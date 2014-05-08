@@ -1,10 +1,10 @@
 <?php
 
-namespace Orienta\Cluster;
+namespace Orienta\Clusters;
 
 use Orienta\Common\MapInterface;
 use Orienta\Common\MapTrait;
-use Orienta\Database\Database;
+use Orienta\Databases\Database;
 use Orienta\Exceptions\Exception;
 
 class ClusterList implements MapInterface

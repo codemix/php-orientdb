@@ -3,7 +3,7 @@
 namespace Orienta\Protocols\Binary\Operations;
 
 use Orienta\Exceptions\Exception;
-use Orienta\Query\QueryInterface;
+use Orienta\Queries\QueryInterface;
 
 class Command extends AbstractDbOperation
 {

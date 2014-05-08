@@ -2,7 +2,7 @@
 
 namespace Orienta\Protocols\Binary\Operations;
 
-use Orienta\Database\Database;
+use Orienta\Databases\Database;
 
 abstract class AbstractDbOperation extends AbstractOperation
 {

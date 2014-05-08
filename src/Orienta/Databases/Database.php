@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Database;
+namespace Orienta\Databases;
 
 use Orienta\Client;
 use Orienta\Clusters\Cluster;
@@ -9,16 +9,16 @@ use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
-use Orienta\Query\Sync;
-use Orienta\Record\DocumentInterface;
-use Orienta\Record\RecordInterface;
+use Orienta\Queries\Sync;
+use Orienta\Records\DocumentInterface;
+use Orienta\Records\RecordInterface;
 
 /**
  * # Database
  *
  * @property ClusterList $clusters
  *
- * @package Orienta\Database
+ * @package Orienta\Databases
  */
 class Database implements ConfigurableInterface, MagicInterface
 {
@@ -176,7 +176,7 @@ class Database implements ConfigurableInterface, MagicInterface
      */
     public function createRecordInstance($orientClass, array $properties = [])
     {
-        return $this->createRecordInstanceInternal($orientClass, 'Orienta\Record\Record', $properties);
+        return $this->createRecordInstanceInternal($orientClass, 'Orienta\Records\Record', $properties);
     }
 
     /**
@@ -189,7 +189,7 @@ class Database implements ConfigurableInterface, MagicInterface
      */
     public function createDocumentInstance($orientClass, array $properties = [])
     {
-        return $this->createRecordInstanceInternal($orientClass, 'Orienta\Record\Document', $properties);
+        return $this->createRecordInstanceInternal($orientClass, 'Orienta\Records\Document', $properties);
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Record;
+namespace Orienta\Records;
 
 use Orienta\Common\Binary;
 use Orienta\Common\MagicInterface;
@@ -11,7 +11,7 @@ use Orienta\Common\MagicTrait;
  * @property int $type
  * @property int $size
  *
- * @package Orienta\Record
+ * @package Orienta\Records
  */
 class Bag implements \Countable, \ArrayAccess, \Traversable, \Iterator, MagicInterface
 {

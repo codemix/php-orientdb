@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Orienta\Record;
+namespace Orienta\Records;
 
 use Orienta\Common\MagicTrait;
 use Orienta\Databases\Database;
@@ -39,7 +39,7 @@ trait RecordTrait
 
     /**
      * Gets the Record ID
-     * @return \Orienta\Record\ID
+     * @return \Orienta\Records\ID
      */
     public function getId()
     {
@@ -49,7 +49,7 @@ trait RecordTrait
     /**
      * Sets the Id
      *
-     * @param \Orienta\Record\ID $id
+     * @param \Orienta\Records\ID $id
      *
      * @return $this the current object
      */

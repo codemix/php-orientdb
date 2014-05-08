@@ -8,7 +8,7 @@ use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\Math;
 use Orienta\Exceptions\Exception;
 use Orienta\Protocols\Binary\Socket;
-use Orienta\Record\Deserializer;
+use Orienta\Records\Deserializer;
 
 abstract class AbstractOperation implements ConfigurableInterface
 {
