@@ -95,4 +95,27 @@ class TransportTest extends TestCase
         $this->assertArrayHasKey('clusters', $result);
         $this->assertGreaterThan(5, count($result['clusters']));
     }
+
+    public function testDbCountRecord()
+    {
+        $client = $this->createClient();
+        $result = $client->execute('dbCountRecords', [
+            'database' => 'GratefulDeadConcerts',
+            'type' => 'graph',
+            'username' => 'admin',
+            'password' => 'admin',
+        ]);
+        $this->assertGreaterThan(0, $result);
+    }
+
+    /**
+    public function testDbFreeze()
+    {
+
+    }
+
+    public function testDbRelease()
+    {
+
+    }*/
 }
