@@ -10,6 +10,8 @@ use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
 use Orienta\Query\Sync;
+use Orienta\Record\DocumentInterface;
+use Orienta\Record\RecordInterface;
 
 /**
  * # Database
@@ -53,7 +55,6 @@ class Database implements ConfigurableInterface, MagicInterface
      */
     public $password = 'admin';
 
-
     /**
      * @var Client The client instance this database belongs to.
      */
@@ -68,6 +69,11 @@ class Database implements ConfigurableInterface, MagicInterface
      * @var ClusterList A list of clusters in the database.
      */
     protected $clusters;
+
+    /**
+     * @var string[] A map of OrientDB class names to PHP class names
+     */
+    protected $classHandlers = [];
 
     /**
      * @param Client $client The client the database belongs to.
@@ -158,5 +164,98 @@ class Database implements ConfigurableInterface, MagicInterface
         return $this->execute('command', [
             'query' => $query
         ]);
+    }
+
+    /**
+     * Create a record instance for the given OrientDB class.
+     *
+     * @param string $orientClass The name of the OrientDB class.
+     * @param array $properties The properties for the record.
+     *
+     * @return RecordInterface The instantiated record.
+     */
+    public function createRecordInstance($orientClass, array $properties = [])
+    {
+        return $this->createRecordInstanceInternal($orientClass, 'Orienta\Record\Record', $properties);
+    }
+
+    /**
+     * Create a document instance for the given OrientDB class.
+     *
+     * @param string $orientClass The name of the OrientDB class.
+     * @param array $properties The properties for the document.
+     *
+     * @return DocumentInterface The instantiated record.
+     */
+    public function createDocumentInstance($orientClass, array $properties = [])
+    {
+        return $this->createRecordInstanceInternal($orientClass, 'Orienta\Record\Document', $properties);
+    }
+
+    /**
+     * Create a record or document instance for the given OrientDB class.
+     *
+     * @param string $orientClass The name of the OrientDB class.
+     * @param string $defaultPHPClass The name of the default PHP class.
+     * @param array $properties The properties for the record or document.
+     *
+     * @return RecordInterface|DocumentInterface The record or document instance.
+     */
+    protected function createRecordInstanceInternal($orientClass, $defaultPHPClass, array $properties)
+    {
+        if (isset($this->classHandlers[$orientClass])) {
+            $handler = $this->classHandlers[$orientClass];
+            if (is_string($handler)) {
+                return new $handler($this, $properties);
+            }
+            else {
+                return $handler($orientClass, $this, $properties);
+            }
+        }
+        else {
+            return new $defaultPHPClass($this, $properties);
+        }
+    }
+
+    /**
+     * Register a PHP class for the given OrientDB class.
+     *
+     * @param string $orientClass The name of the OrientDB class.
+     * @param string|callable $phpClass The name of the PHP class, or a callable which can return a class instance.
+     *
+     * @return $this The current object, with handler applied.
+     */
+    public function registerClassHandler($orientClass, $phpClass)
+    {
+        $this->classHandlers[$orientClass] = $phpClass;
+        return $this;
+    }
+
+    /**
+     * Register an array of class handlers.
+     *
+     * @param array $classes A map of class names to handlers
+     *
+     * @return $this The current object, with handlers applied.
+     */
+    public function registerClassHandlers($classes)
+    {
+        foreach($classes as $orientClass => $phpClass) {
+            $this->classHandlers[$orientClass] = $phpClass;
+        }
+        return $this;
+    }
+
+    /**
+     * Unregister a class handler for the given OrientDB class.
+     *
+     * @param string $orientClass The name of the OrientDB class.
+     *
+     * @return $this The current object, with the handler removed.
+     */
+    public function unregisterClassHandler($orientClass)
+    {
+        unset($this->classHandlers[$orientClass]);
+        return $this;
     }
 }
