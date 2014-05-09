@@ -2,6 +2,7 @@
 
 namespace Orienta\Databases;
 
+use Orienta\Classes\ClassList;
 use Orienta\Client;
 use Orienta\Clusters\Cluster;
 use Orienta\Clusters\ClusterList;
@@ -71,6 +72,11 @@ class Database implements ConfigurableInterface, MagicInterface
     protected $clusters;
 
     /**
+     * @var ClassList A list of classes in the database.
+     */
+    protected $classes;
+
+    /**
      * @var string[] A map of OrientDB class names to PHP class names
      */
     protected $classHandlers = [];
@@ -111,6 +117,47 @@ class Database implements ConfigurableInterface, MagicInterface
     public function getCluster($name)
     {
         return $this->getClusters()->offsetGet($name);
+    }
+
+    /**
+     * Sets the Classes
+     *
+     * @param \Orienta\Classes\ClassList $classes
+     *
+     * @return $this the current object
+     */
+    public function setClasses($classes)
+    {
+        $this->classes = $classes;
+        return $this;
+    }
+
+    /**
+     * Gets the Classes
+     * @return \Orienta\Classes\ClassList
+     */
+    public function getClasses()
+    {
+        if ($this->classes === null) {
+            $record = $this->execute('recordLoad', [
+                'cluster' => 0,
+                'position' => 1
+            ]);
+            $this->classes = new ClassList($this, $record->classes);
+        }
+        return $this->classes;
+    }
+
+    /**
+     * Gets a class with the specific name.
+     *
+     * @param string $name The name of the class to get.
+     *
+     * @return null|\Orienta\Classes\ClassInterface The class instance.
+     */
+    public function getClass($name)
+    {
+        return $this->getClasses()->offsetGet($name);
     }
 
 
