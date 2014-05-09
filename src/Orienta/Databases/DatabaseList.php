@@ -4,6 +4,7 @@ namespace Orienta\Databases;
 
 use Orienta\Client;
 use Orienta\Common\MapInterface;
+use Orienta\Common\MapIterator;
 use Orienta\Common\MapTrait;
 
 class DatabaseList implements MapInterface
@@ -120,14 +121,14 @@ class DatabaseList implements MapInterface
      * Returns an iterator for traversing the data.
      * This method is required by the SPL interface `IteratorAggregate`.
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return \ArrayIterator an iterator for traversing the cookies in the collection.
+     * @return MapIterator an iterator for traversing the cookies in the collection.
      */
     public function getIterator()
     {
         if ($this->items === null) {
             $this->reload();
         }
-        return new \ArrayIterator($this->items);
+        return new MapIterator($this);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Orienta\Databases;
 
+use Orienta\Classes\ClassInterface;
 use Orienta\Classes\ClassList;
 use Orienta\Client;
 use Orienta\Clusters\Cluster;
@@ -12,6 +13,7 @@ use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
 use Orienta\Queries\Sync;
 use Orienta\Records\DocumentInterface;
+use Orienta\Records\ID;
 use Orienta\Records\RecordInterface;
 
 /**
@@ -140,11 +142,11 @@ class Database implements ConfigurableInterface, MagicInterface
     public function getClasses()
     {
         if ($this->classes === null) {
-            $record = $this->execute('recordLoad', [
+            $result = $this->execute('recordLoad', [
                 'cluster' => 0,
                 'position' => 1
             ]);
-            $this->classes = new ClassList($this, $record->classes);
+            $this->classes = new ClassList($this, $result->classes);
         }
         return $this->classes;
     }
@@ -161,6 +163,23 @@ class Database implements ConfigurableInterface, MagicInterface
         return $this->getClasses()->offsetGet($name);
     }
 
+    /**
+     * @param string|ID $id The record ID to load.
+     * @param array $options The options for the `RecordLoad` command.
+     *
+     * @return RecordInterface|null The loaded record, if it exists.
+     */
+    public function loadRecord($id, array $options = [])
+    {
+        if (!($id instanceof ID)) {
+            $id = new ID($id);
+        }
+        $params = [
+            'cluster' => $id->cluster,
+            'position' => $id->position
+        ];
+        return $this->execute('recordLoad', array_merge($params, $options));
+    }
 
     /**
      * Execute the given operation.
@@ -217,7 +236,7 @@ class Database implements ConfigurableInterface, MagicInterface
     /**
      * Create a record instance for the given OrientDB class.
      *
-     * @param string $orientClass The name of the OrientDB class.
+     * @param ClassInterface|string $orientClass The OrientDB class.
      * @param array $properties The properties for the record.
      *
      * @return RecordInterface The instantiated record.
@@ -230,7 +249,7 @@ class Database implements ConfigurableInterface, MagicInterface
     /**
      * Create a document instance for the given OrientDB class.
      *
-     * @param string $orientClass The name of the OrientDB class.
+     * @param ClassInterface|string $orientClass The OrientDB class.
      * @param array $properties The properties for the document.
      *
      * @return DocumentInterface The instantiated record.
@@ -243,7 +262,7 @@ class Database implements ConfigurableInterface, MagicInterface
     /**
      * Create a record or document instance for the given OrientDB class.
      *
-     * @param string $orientClass The name of the OrientDB class.
+     * @param ClassInterface|string $orientClass The OrientDB class.
      * @param string $defaultPHPClass The name of the default PHP class.
      * @param array $properties The properties for the record or document.
      *
@@ -251,6 +270,9 @@ class Database implements ConfigurableInterface, MagicInterface
      */
     protected function createRecordInstanceInternal($orientClass, $defaultPHPClass, array $properties)
     {
+        if ($orientClass instanceof ClassInterface) {
+            $orientClass = $orientClass->name;
+        }
         if (isset($this->classHandlers[$orientClass])) {
             $handler = $this->classHandlers[$orientClass];
             if (is_string($handler)) {

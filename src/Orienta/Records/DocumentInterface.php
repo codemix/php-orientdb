@@ -19,5 +19,13 @@ interface DocumentInterface extends RecordInterface
      *
      * @return array The document attributes.
      */
-     public function getAttributes();
+    public function getAttributes();
+
+
+    /**
+     * Replace RIDs with their concrete instances.
+     *
+     * @param RecordInterface[] $items The record / document instances.
+     */
+    public function resolveReferences($items);
 }

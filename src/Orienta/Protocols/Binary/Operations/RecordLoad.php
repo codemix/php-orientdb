@@ -5,6 +5,7 @@ namespace Orienta\Protocols\Binary\Operations;
 use Orienta\Exceptions\Exception;
 use Orienta\Records\Deserializer;
 use Orienta\Records\Document;
+use Orienta\Records\DocumentInterface;
 use Orienta\Records\ID;
 use Orienta\Records\Record;
 
@@ -59,12 +60,25 @@ class RecordLoad extends AbstractDbOperation
      */
     protected function read()
     {
-        $first = $this->readPayload();
-        $children = [];
+        $payloads = [];
         while(($payload = $this->readPayload()) !== null) {
-            $children[] = $payload;
+            $payloads[] = $payload;
         }
-        // @todo assemble references
+
+        $first = null;
+        $references = [];
+
+        foreach($payloads as $i => $payload) {
+            if ($i) {
+                $references[] = $this->normalizePayload($payload);
+            }
+            else {
+                $first = $this->normalizePayload($payload);
+            }
+        }
+        if ($first instanceof DocumentInterface && count($references)) {
+            $first->resolveReferences($references);
+        }
         return $first;
     }
 
@@ -84,18 +98,19 @@ class RecordLoad extends AbstractDbOperation
                 $payload['bytes'] = $this->readString();
                 $payload['version'] = $this->readInt();
                 $payload['type'] = $this->readChar();
-                return $this->normalizePayload($payload);
+                return $payload;
             case 2:
+                // prefetched record
                 $payload['classId'] = $this->readShort();
                 if ($payload['classId'] == -2 || $payload['classId'] == -3) {
-                    return $this->normalizePayload($payload);
+                    return $payload;
                 }
                 $payload['type'] = $this->readChar();
-                $payload['bytes'] = $this->readShort();
+                $payload['cluster'] = $this->readShort();
                 $payload['position'] = $this->readLong();
                 $payload['version'] = $this->readInt();
-                $payload['content'] = $this->readString();
-                return $this->normalizePayload($payload);
+                $payload['bytes'] = $this->readString();
+                return $payload;
             default:
                 throw new Exception('Unknown payload status: "'.$status.'"');
         }
@@ -105,23 +120,26 @@ class RecordLoad extends AbstractDbOperation
     {
         if (!isset($payload['type']))
             return $payload;
-
-        if ($payload['type'] === 'd') {
-            $record = new Document($this->database);
-            $attributes = Deserializer::deserialize($payload['bytes']);
-            if (isset($attributes['@class'])) {
-                $record->setClass($attributes['@class']);
-                unset($attributes['@class']);
+        if ($payload['cluster'] > 0) {
+            $class = $this->database->getClasses()->byId($payload['cluster']);
+            if ($payload['type'] === 'd') {
+                $record = $this->database->createDocumentInstance($class);
             }
-            $record->setAttributes($attributes);
+            else {
+                $record = $this->database->createRecordInstance($class);
+            }
+            $record->setClass($class);
+        }
+        elseif ($payload['type'] === 'd') {
+            $record = new Document($this->database);
         }
         else {
             $record = new Record($this->database);
-            $record->setBytes($payload['bytes']);
         }
         $record->setId(new ID($payload['cluster'], $payload['position']));
         $record->setVersion(isset($payload['version']) ? $payload['version'] : 0);
-
+        $record->setBytes($payload['bytes']);
         return $record;
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace Orienta\Records;
 
+use Orienta\Classes\ClassInterface;
 use Orienta\Common\MagicInterface;
 
 interface RecordInterface extends SerializableInterface, \JsonSerializable, MagicInterface
@@ -25,7 +26,7 @@ interface RecordInterface extends SerializableInterface, \JsonSerializable, Magi
     /**
      * Sets the Class
      *
-     * @param string $class
+     * @param ClassInterface|string $class
      *
      * @return $this the current object
      */
@@ -73,4 +74,6 @@ interface RecordInterface extends SerializableInterface, \JsonSerializable, Magi
      * @return bool true if the record is new, otherwise false.
      */
     public function getIsNew();
+
+
 }
