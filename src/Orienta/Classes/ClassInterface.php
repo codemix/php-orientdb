@@ -4,6 +4,17 @@ namespace Orienta\Classes;
 
 use Orienta\Databases\Database;
 
+/**
+ *
+ * @property string $name
+ * @property string $shortName
+ * @property int $defaultClusterId
+ * @property int[] $clusterIds
+ * @property bool $abstract
+ *
+ * @property PropertyList $properties
+ *
+ */
 interface ClassInterface
 {
     /**

@@ -11,6 +11,13 @@ class ClassTest extends DbTestCase
      */
     public $class;
 
+    public function testMagic()
+    {
+        $this->assertEquals('OUser', $this->class->name);
+        $this->assertEquals('', $this->class->shortName);
+        $this->assertInstanceOf('Orienta\Classes\PropertyList', $this->class->properties);
+    }
+
     public function testGetProperties()
     {
         $this->assertInstanceOf('Orienta\Classes\PropertyList', $this->class->getProperties());

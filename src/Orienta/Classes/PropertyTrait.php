@@ -3,10 +3,15 @@
 namespace Orienta\Classes;
 
 /**
- *
- *
  * @property string $name The name of the property.
- * @property int $type The property type
+ * @property int $type The property type.
+ * @property bool $mandatory true if the property is mandatory.
+ * @property bool $readonly true if the property is read only.
+ * @property bool $notNull true if the property cannot contain null values.
+ * @property int|null $min The minimum value, if any.
+ * @property int|null $max The maximum value, if any.
+ * @property string $regexp The regular expression for this property.
+ * @property array $customFields The custom fields for the property.
  *
  * @package Orienta\Classes
  */
@@ -68,11 +73,11 @@ trait PropertyTrait
     }
 
     /**
-     * Get a property with the given name.
+     * Get an attribute with the given name.
      *
-     * @param string $name The name of the property to get.
+     * @param string $name The name of the attribute to get.
      *
-     * @return mixed The value of the property.
+     * @return mixed The value of the attribute.
      * @throws \OutOfBoundsException
      */
     public function __get($name)
@@ -86,10 +91,10 @@ trait PropertyTrait
     }
 
     /**
-     * Set a property with the given name.
+     * Set an attribute with the given name.
      *
-     * @param string $name The property name.
-     * @param mixed $value The property value.
+     * @param string $name The attribute name.
+     * @param mixed $value The attribute value.
      */
     public function __set($name, $value)
     {
@@ -97,11 +102,11 @@ trait PropertyTrait
     }
 
     /**
-     * Determine whether the property with the given name exists.
+     * Determine whether the attribute with the given name exists.
      *
-     * @param string $name The name of the property.
+     * @param string $name The name of the attribute.
      *
-     * @return bool true if the property exists
+     * @return bool true if the attribute exists
      */
     public function __isset($name)
     {
@@ -109,14 +114,13 @@ trait PropertyTrait
     }
 
     /**
-     * Unset the property with the given name.
+     * Unset the attribute with the given name.
      *
-     * @param string $name The name of the property to unset.
+     * @param string $name The name of the attribute to unset.
      */
     public function __unset($name)
     {
         unset($this->data[$name]);
     }
-
 
 }

@@ -4,6 +4,18 @@ namespace Orienta\Classes;
 
 use Orienta\Databases\Database;
 
+/**
+ *
+ * @property string $name
+ * @property string $shortName
+ * @property int $defaultClusterId
+ * @property int[] $clusterIds
+ * @property bool $abstract
+ *
+ * @property PropertyList $properties
+ *
+ * @package Orienta\Classes
+ */
 trait ClassTrait
 {
 
@@ -94,4 +106,101 @@ trait ClassTrait
         return $this->properties;
     }
 
+
+    /**
+     * Get an attribute with the given name.
+     *
+     * @param string $name The name of the attribute to get.
+     * @param null $default The default value to return if no such attribute is specified.
+     *
+     * @return mixed The attribute value.
+     */
+    public function getAttribute($name, $default = null)
+    {
+        return isset($this->data[$name]) ? $this->data[$name] : $default;
+    }
+
+    /**
+     * Set an attribute value.
+     *
+     * @param string $name The name of the attribute to set.
+     * @param mixed $value The value of the attribute.
+     *
+     * @return $this The current object.
+     */
+    public function setAttribute($name, $value)
+    {
+        $this->data[$name] = $value;
+        return $this;
+    }
+
+
+    /**
+     * Get an attribute with the given name.
+     *
+     * @param string $name The name of the attribute to get.
+     *
+     * @return mixed The value of the attribute.
+     * @throws \OutOfBoundsException
+     */
+    public function __get($name)
+    {
+        if ($name === 'properties') {
+            return $this->getProperties();
+        }
+        else if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        }
+        else {
+            throw new \OutOfBoundsException(get_called_class().' does not have a property called "'.$name.'"');
+        }
+    }
+
+    /**
+     * Set an attribute with the given name.
+     *
+     * @param string $name The attribute name.
+     * @param mixed $value The attribute value.
+     */
+    public function __set($name, $value)
+    {
+        if ($name === 'properties') {
+            $this->setProperties($value);
+        }
+        else {
+            $this->data[$name] = $value;
+        }
+    }
+
+    /**
+     * Determine whether the attribute with the given name exists.
+     *
+     * @param string $name The name of the attribute.
+     *
+     * @return bool true if the attribute exists
+     */
+    public function __isset($name)
+    {
+        if ($name === 'properties') {
+            return true;
+        }
+        else {
+            return isset($this->data[$name]);
+        }
+    }
+
+    /**
+     * Unset the attribute with the given name.
+     *
+     * @param string $name The name of the attribute to unset.
+     */
+    public function __unset($name)
+    {
+        if ($name === 'properties') {
+            $this->properties = null;
+        }
+        else {
+            unset($this->data[$name]);
+        }
+    }
 }
