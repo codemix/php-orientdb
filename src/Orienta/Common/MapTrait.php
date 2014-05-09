@@ -3,9 +3,33 @@
 namespace Orienta\Common;
 
 
+
 trait MapTrait
 {
     use ListTrait;
+
+    /**
+     * Returns an iterator for traversing the data.
+     * This method is required by the SPL interface `IteratorAggregate`.
+     * It will be implicitly called when you use `foreach` to traverse the collection.
+     * @return MapIterator an iterator for traversing the cookies in the collection.
+     */
+    public function getIterator()
+    {
+        return new MapIterator($this);
+    }
+
+
+    /**
+     * Get a list of keys in the map.
+     *
+     * @return string[] An array of keys.
+     */
+    public function keys()
+    {
+        return array_keys($this->items);
+    }
+
 
     /**
      * Call a virtual property.
@@ -37,7 +61,7 @@ trait MapTrait
     public function __get($name)
     {
         if (array_key_exists($name, $this->items)) {
-            return $this->items[$name];
+            return $this->offsetGet($name);
         }
         else {
             throw new \OutOfBoundsException(get_called_class().' does not have a property called "'.$name.'"');
@@ -54,7 +78,7 @@ trait MapTrait
      */
     public function __set($name, $value)
     {
-        $this->items[$name] = $value;
+        $this->offsetSet($name, $value);
     }
 
     /**
