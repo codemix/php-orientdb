@@ -11,6 +11,7 @@ use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
+use Orienta\Queries\ResultList;
 use Orienta\Queries\Sync;
 use Orienta\Records\DocumentInterface;
 use Orienta\Records\ID;
@@ -218,7 +219,7 @@ class Database implements ConfigurableInterface, MagicInterface
      * @param string $query The query text.
      * @param array $params The query parameters.
      *
-     * @return mixed The result of the query
+     * @return ResultList The result of the query
      */
     public function query($query, array $params = [])
     {
@@ -228,9 +229,9 @@ class Database implements ConfigurableInterface, MagicInterface
                 'params' => $params
             ]);
         }
-        return $this->execute('command', [
+        return new ResultList($this, $this->execute('command', [
             'query' => $query
-        ]);
+        ]));
     }
 
     /**

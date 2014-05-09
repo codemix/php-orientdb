@@ -21,14 +21,6 @@ class DatabaseTest extends DbTestCase
         $this->assertEquals('ouser', $cluster->name);
     }
 
-    public function testQuery()
-    {
-        $results = $this->db->query('SELECT * FROM OUser');
-        $this->assertArrayHasKey(0, $results);
-        $this->assertArrayHasKey('content', $results[0]);
-        $this->assertGreaterThanOrEqual(3, count($results[0]['content']));
-    }
-
     public function testLoadRecord()
     {
         $record = $this->db->loadRecord('#5:0');

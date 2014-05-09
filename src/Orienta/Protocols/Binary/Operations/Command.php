@@ -39,11 +39,40 @@ class Command extends AbstractDbOperation
      */
     protected function read()
     {
-        $results = [];
+        $payloads = [];
         while(($payload = $this->readPayload()) !== null) {
-            $results[] = $payload;
+            $payloads[] = $payload;
         }
-        return $results;
+        $results = [];
+        foreach($payloads as $payload) {
+            switch($payload['type']) {
+                case 'r':
+                case 'p':
+                    if ($payload['content']) {
+                        $results[] = $this->normalizeRecord($payload['content']);
+                    }
+                    else {
+                        $results[] = $payload['content'];
+                    }
+                    break;
+                case 'f':
+                    $results[] = $payload['content'];
+                    break;
+                case 'l':
+                    $collection = [];
+                    foreach($payload['content'] as $item) {
+                        $collection[] = $this->normalizeRecord($item);
+                    }
+                    $results[] = $collection;
+                break;
+            }
+        }
+        if (count($results) === 1) {
+            return $results[0];
+        }
+        else {
+            return $results;
+        }
     }
 
     protected function readPayload()

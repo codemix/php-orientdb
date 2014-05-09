@@ -70,10 +70,10 @@ class RecordLoad extends AbstractDbOperation
 
         foreach($payloads as $i => $payload) {
             if ($i) {
-                $references[] = $this->normalizePayload($payload);
+                $references[] = $this->normalizeRecord($payload);
             }
             else {
-                $first = $this->normalizePayload($payload);
+                $first = $this->normalizeRecord($payload);
             }
         }
         if ($first instanceof DocumentInterface && count($references)) {
@@ -116,30 +116,5 @@ class RecordLoad extends AbstractDbOperation
         }
     }
 
-    protected function normalizePayload(array $payload)
-    {
-        if (!isset($payload['type']))
-            return $payload;
-        if ($payload['cluster'] > 0) {
-            $class = $this->database->getClasses()->byId($payload['cluster']);
-            if ($payload['type'] === 'd') {
-                $record = $this->database->createDocumentInstance($class);
-            }
-            else {
-                $record = $this->database->createRecordInstance($class);
-            }
-            $record->setClass($class);
-        }
-        elseif ($payload['type'] === 'd') {
-            $record = new Document($this->database);
-        }
-        else {
-            $record = new Record($this->database);
-        }
-        $record->setId(new ID($payload['cluster'], $payload['position']));
-        $record->setVersion(isset($payload['version']) ? $payload['version'] : 0);
-        $record->setBytes($payload['bytes']);
-        return $record;
-    }
 
 }
