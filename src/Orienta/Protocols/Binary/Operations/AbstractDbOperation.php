@@ -3,7 +3,6 @@
 namespace Orienta\Protocols\Binary\Operations;
 
 use Orienta\Databases\Database;
-use Orienta\Exceptions\Exception;
 use Orienta\Records\Document;
 use Orienta\Records\DocumentInterface;
 use Orienta\Records\ID;

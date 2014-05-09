@@ -4,10 +4,7 @@ namespace Orienta\Queries;
 use Orienta\Common\ListInterface;
 use Orienta\Common\ListTrait;
 use Orienta\Databases\Database;
-use Orienta\Records\Document;
 use Orienta\Records\DocumentInterface;
-use Orienta\Records\ID;
-use Orienta\Records\Record;
 use Orienta\Records\RecordInterface;
 
 /**
