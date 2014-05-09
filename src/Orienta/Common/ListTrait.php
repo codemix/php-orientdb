@@ -14,11 +14,11 @@ trait ListTrait
      * Returns an iterator for traversing the data.
      * This method is required by the SPL interface `IteratorAggregate`.
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return \ArrayIterator an iterator for traversing the cookies in the collection.
+     * @return ListIterator an iterator for traversing the cookies in the collection.
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->items);
+        return new ListIterator($this);
     }
 
     /**
