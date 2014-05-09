@@ -18,6 +18,7 @@ use Orienta\Records\RecordInterface;
  * # Database
  *
  * @property ClusterList $clusters
+ * @property ClassList $classes
  *
  * @package Orienta\Databases
  */
