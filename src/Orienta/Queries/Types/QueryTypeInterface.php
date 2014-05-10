@@ -1,9 +1,9 @@
 <?php
 
-namespace Orienta\Queries;
+namespace Orienta\Queries\Types;
 
 
-interface QueryInterface
+interface QueryTypeInterface
 {
     /**
      * Get the name or alias of the remote OrientDB query class that this class represents.

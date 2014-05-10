@@ -3,7 +3,7 @@
 namespace Orienta\Protocols\Binary\Operations;
 
 use Orienta\Exceptions\Exception;
-use Orienta\Queries\QueryInterface;
+use Orienta\Queries\QueryTypeInterface;
 
 class Command extends AbstractDbOperation
 {
@@ -18,7 +18,7 @@ class Command extends AbstractDbOperation
     public $mode = 's';
 
     /**
-     * @var QueryInterface The query object.
+     * @var QueryTypeInterface The query object.
      */
     public $query;
 

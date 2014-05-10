@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Orienta\Queries;
+namespace Orienta\Queries\Types;
 
 use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Records\Serializer;
 
-abstract class AbstractQuery implements QueryInterface, ConfigurableInterface
+abstract class AbstractQueryType implements QueryTypeInterface, ConfigurableInterface
 {
     use ConfigurableTrait;
 

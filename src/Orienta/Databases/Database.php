@@ -12,7 +12,7 @@ use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
 use Orienta\Queries\ResultList;
-use Orienta\Queries\Sync;
+use Orienta\Queries\Types\Sync;
 use Orienta\Records\DocumentInterface;
 use Orienta\Records\ID;
 use Orienta\Records\RecordInterface;

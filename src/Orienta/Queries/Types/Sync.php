@@ -1,17 +1,27 @@
 <?php
 
-namespace Orienta\Queries;
+namespace Orienta\Queries\Types;
+
 
 use Orienta\Common\Binary;
 
-class Script extends AbstractQuery
+/**
+ * # Synchronous Query
+ *
+ * @package Orienta\Queries
+ */
+class Sync extends AbstractQueryType
 {
+
     /**
-     * @var string The script language.
+     * @var int The non-text limit for the query.
      */
-    public $language = 'sql';
+    public $limit = -1;
 
-
+    /**
+     * @var string The fetch plan for the query.
+     */
+    public $fetchPlan = '';
 
     /**
      * Get the name or alias of the remote OrientDB query class that this class represents.
@@ -19,7 +29,7 @@ class Script extends AbstractQuery
      */
     public function getOrientClass()
     {
-        return 's';
+        return 'q';
     }
 
     /**
@@ -30,15 +40,16 @@ class Script extends AbstractQuery
     public function binarySerialize()
     {
         $bytes = Binary::packString($this->getOrientClass());
-        $bytes .= Binary::packString($this->language);
         $bytes .= Binary::packString($this->text);
+        $bytes .= Binary::packInt($this->limit);
+        $bytes .= Binary::packString($this->fetchPlan);
+
         if (count($this->params)) {
             $bytes .= Binary::packString($this->serializeParams());
         }
         else {
             $bytes .= Binary::packInt(0);
         }
-        $bytes .= Binary::packByte(0);
         return $bytes;
     }
 
