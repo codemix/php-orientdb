@@ -29,6 +29,23 @@ class ClassList implements MapInterface
     }
 
     /**
+     * Get a class by its cluster id.
+     *
+     * @param int $id The cluster id.
+     *
+     * @return null|ClassInterface The class instance, or null if none could be found.
+     */
+    public function byId($id)
+    {
+        foreach($this as $item /* @var ClassInterface $item */) {
+            if ($item->defaultClusterId == $id || in_array($id, $item->clusterIds)) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @inheritDoc
      */
     public function offsetSet($offset, $value)
@@ -37,7 +54,7 @@ class ClassList implements MapInterface
             $offset = $value['name'];
         }
         else if ($value instanceof ClassInterface) {
-            $offset = $value->getName();
+            $offset = $value->name;
         }
         $this->items[$offset] = $value;
     }

@@ -21,5 +21,11 @@ class ClassListTest extends DbTestCase
         }
     }
 
+    public function testById()
+    {
+        $class = $this->db->getClasses()->byId(5);
+        $this->assertInstanceOf('Orienta\Classes\BuiltinClass', $class);
+        $this->assertEquals('OUser', $class->name);
+    }
 
 }

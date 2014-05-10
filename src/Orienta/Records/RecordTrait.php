@@ -3,6 +3,7 @@
 
 namespace Orienta\Records;
 
+use Orienta\Classes\ClassInterface;
 use Orienta\Common\MagicTrait;
 use Orienta\Databases\Database;
 
@@ -17,7 +18,7 @@ trait RecordTrait
     protected $id;
 
     /**
-     * @var string The name of the class this record belongs to.
+     * @var ClassInterface The class this record belongs to.
      */
     protected $class;
 
@@ -63,19 +64,22 @@ trait RecordTrait
     /**
      * Sets the Class
      *
-     * @param string $class
+     * @param ClassInterface|string $class
      *
      * @return $this the current object
      */
     public function setClass($class)
     {
+        if (is_string($class)) {
+            $class = $this->database->getClass($class);
+        }
         $this->class = $class;
         return $this;
     }
 
     /**
      * Gets the Class
-     * @return string
+     * @return ClassInterface|null
      */
     public function getClass()
     {

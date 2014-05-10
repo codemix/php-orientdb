@@ -311,7 +311,7 @@ abstract class AbstractOperation implements ConfigurableInterface
         }
         else if ($classId === -2) {
             // null record
-            $record['value'] = null;
+            $record['bytes'] = null;
         }
         else if ($classId === -3) {
             // reference
@@ -324,7 +324,7 @@ abstract class AbstractOperation implements ConfigurableInterface
             $record['cluster'] = $this->readShort();
             $record['position'] = $this->readLong();
             $record['version'] = $this->readInt();
-            $record['value'] = $this->readSerialized();
+            $record['bytes'] = $this->readBytes();
         }
         return $record;
     }

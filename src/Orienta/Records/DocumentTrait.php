@@ -9,7 +9,7 @@ trait DocumentTrait
     /**
      * @var array The record attributes.
      */
-    protected $attributes = [];
+    protected $attributes;
 
     /**
      * Sets the attributes for the document.
@@ -31,8 +31,63 @@ trait DocumentTrait
      */
     public function getAttributes()
     {
+        if ($this->attributes === null) {
+            $this->deserializeAttributes();
+        }
         return $this->attributes;
     }
+
+    protected function deserializeAttributes()
+    {
+        if (!strlen($this->bytes)) {
+            $this->attributes = [];
+        }
+        else {
+            $this->attributes = Deserializer::deserialize($this->bytes);
+        }
+    }
+
+    /**
+     * Replace RIDs with their concrete instances.
+     *
+     * @param RecordInterface[] $instances The record / document instances.
+     */
+    public function resolveReferences($instances)
+    {
+        $attributes = $this->getAttributes();
+        $this->setAttributes($this->resolveItemReferences($attributes, $instances));
+    }
+
+    /**
+     * Replace RIDs with their concrete instances in the given subject.
+     *
+     * @param array $subject The array of fields containing references
+     * @param RecordInterface[] $instances The instances
+     *
+     * @return array The array with references replaced
+     */
+    protected function resolveItemReferences(array $subject, $instances)
+    {
+        foreach($subject as $key => $value) {
+            if (is_array($value)) {
+                $subject[$key] = $this->resolveItemReferences($value, $instances);
+            }
+            else if ($value instanceof ID) {
+                foreach($instances as $instance) {
+                    $id = $instance->getId();
+                    if ($value->cluster == $id->cluster && $value->position == $id->position) {
+                        $subject[$key] = $instance;
+                        break;
+                    }
+                }
+            }
+            else if ($value instanceof DocumentInterface) {
+                $value->resolveReferences($instances);
+            }
+        }
+        return $subject;
+    }
+
 
     /**
      * Return a representation of the class that can be serialized as an
@@ -75,8 +130,9 @@ trait DocumentTrait
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->attributes)) {
-            return $this->attributes[$name];
+        $attributes = $this->getAttributes();
+        if (array_key_exists($name, $attributes)) {
+            return $attributes[$name];
         }
 
         $getter = 'get'.$name;
@@ -98,6 +154,7 @@ trait DocumentTrait
      */
     public function __set($name, $value)
     {
+        $this->getAttributes();
         $this->attributes[$name] = $value;
     }
 
@@ -110,7 +167,8 @@ trait DocumentTrait
      */
     public function __isset($name)
     {
-        return isset($this->attributes[$name]);
+        $attributes = $this->getAttributes();
+        return isset($attributes[$name]);
     }
 
     /**
@@ -120,6 +178,7 @@ trait DocumentTrait
      */
     public function __unset($name)
     {
+        $this->getAttributes();
         unset($this->attributes[$name]);
     }
 }
