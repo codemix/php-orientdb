@@ -51,8 +51,12 @@ abstract class AbstractQueryType implements QueryTypeInterface, ConfigurableInte
                     $collected[$key] = $value;
                 }
             }
+            else {
+                $collected[$key] = $value;
+            }
         }
-        return Serializer::serialize(['params' => $collected]);
+        $serialized = Serializer::serialize($collected);
+        return "params:".$serialized;
     }
 
 }

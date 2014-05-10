@@ -10,18 +10,8 @@ use Orienta\Common\Binary;
  *
  * @package Orienta\Queries
  */
-class Sync extends AbstractQueryType
+class Command extends AbstractQueryType
 {
-
-    /**
-     * @var int The non-text limit for the query.
-     */
-    public $limit = -1;
-
-    /**
-     * @var string The fetch plan for the query.
-     */
-    public $fetchPlan = '';
 
     /**
      * Get the name or alias of the remote OrientDB query class that this class represents.
@@ -29,7 +19,7 @@ class Sync extends AbstractQueryType
      */
     public function getOrientClass()
     {
-        return 'q';
+        return 'com.orientechnologies.orient.core.sql.OCommandSQL';
     }
 
     /**
@@ -41,8 +31,6 @@ class Sync extends AbstractQueryType
     {
         $bytes = Binary::packString($this->getOrientClass());
         $bytes .= Binary::packString($this->text);
-        $bytes .= Binary::packInt($this->limit);
-        $bytes .= Binary::packString($this->fetchPlan);
 
         if (count($this->params)) {
             $bytes .= Binary::packByte(1);
@@ -51,6 +39,7 @@ class Sync extends AbstractQueryType
         else {
             $bytes .= Binary::packInt(0);
         }
+        $bytes .= Binary::packInt(0);
         return $bytes;
     }
 
