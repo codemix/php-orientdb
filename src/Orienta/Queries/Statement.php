@@ -2,6 +2,14 @@
 
 namespace Orienta\Queries;
 
+/**
+ * Class Statement
+ *
+ * @method \Orienta\Queries\Statement or() or($condition) Add an `OR` condition.
+ * @method \Orienta\Queries\Statement and() and($condition) Add an `AND` condition.
+ *
+ * @package Orienta\Queries
+ */
 class Statement implements ExpressionInterface
 {
     /**
@@ -32,8 +40,10 @@ class Statement implements ExpressionInterface
         'where' => 'WHERE',
         'groupBy' => 'GROUP BY',
         'orderBy' => 'ORDER BY',
+        'skip' => 'SKIP',
         'limit' => 'LIMIT',
-        'offset' => 'OFFSET',
+        'fetch' => 'FETCHPLAN',
+        'timeout' => 'TIMEOUT',
         'lock' => 'LOCK',
         'commit' => 'COMMIT',
         'return' => 'RETURN',
@@ -51,6 +61,74 @@ class Statement implements ExpressionInterface
         $args = func_get_args();
         $args[0] = $expression;
         return $this->addClause('select', $args);
+    }
+
+    /**
+     * Add an `INSERT` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function insert($expression = null)
+    {
+        if ($expression !== null) {
+            $this->addClause('set', func_get_args());
+        }
+        return $this->addClause('insert', []);
+    }
+
+    /**
+     * Add an `UPDATE` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function update($expression)
+    {
+        return $this->addClause('update', func_get_args());
+    }
+
+
+    /**
+     * Add a `DELETE` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function delete($expression = null)
+    {
+        if ($expression !== null) {
+            $this->addClause('from', func_get_args());
+        }
+        return $this->addClause('delete', []);
+    }
+
+
+    /**
+     * Add a `SET` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function set($expression)
+    {
+        return $this->addClause('set', func_get_args());
+    }
+
+    /**
+     * Add an `INTO` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function into($expression)
+    {
+        return $this->addClause('into', func_get_args());
     }
 
     /**
@@ -90,6 +168,89 @@ class Statement implements ExpressionInterface
         return $this->addCondition($condition, $operator);
     }
 
+    /**
+     * Add a `GROUP BY` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function groupBy($expression)
+    {
+        return $this->addClause('groupBy', func_get_args());
+    }
+
+    /**
+     * Add a `LIMIT` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function limit($expression)
+    {
+        return $this->addClause('limit', func_get_args());
+    }
+
+    /**
+     * Add a `SKIP` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function skip($expression)
+    {
+        return $this->addClause('skip', func_get_args());
+    }
+
+    /**
+     * Add a `SKIP` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function offset($expression)
+    {
+        return $this->addClause('skip', func_get_args());
+    }
+
+    /**
+     * Add a `SKIP` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function fetch($expression)
+    {
+        return $this->addClause('fetch', func_get_args());
+    }
+
+    /**
+     * Add a `TIMEOUT` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function timeout($expression)
+    {
+        return $this->addClause('timeout', func_get_args());
+    }
+
+    /**
+     * Add a `LOCK` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function lock($expression = 'default')
+    {
+        return $this->addClause('lock', [$expression]);
+    }
 
     /**
      * Add a condition.
@@ -119,7 +280,10 @@ class Statement implements ExpressionInterface
         foreach($this->clauseOrder as $name => $keyword) {
             if (isset($this->clauses[$name])) {
                 $methodName = 'process'.$name;
-                if (method_exists($this, $methodName)) {
+                if ($name === 'insert' || $name === 'delete') {
+                    $parts[] = $keyword;
+                }
+                else if (method_exists($this, $methodName)) {
                     $parts[] = $this->{$methodName}($this->clauses[$name]);
                 }
                 else {
@@ -133,7 +297,7 @@ class Statement implements ExpressionInterface
                         }
                     }
 
-                    $parts[] = $keyword.' '.implode(', ', $clauseParts);
+                    $parts[] = $keyword.' '.implode(',', $clauseParts);
                 }
             }
         }
@@ -155,7 +319,7 @@ class Statement implements ExpressionInterface
             }
         }
 
-        return 'SELECT '.implode(', ', $clauseParts);
+        return 'SELECT '.implode(',', $clauseParts);
     }
 
     protected function processWhere($items)
@@ -171,6 +335,7 @@ class Statement implements ExpressionInterface
                 }
                 $stack = [];
                 $currentOp = $operation;
+                $combined[] = $currentOp;
             }
             if (is_array($condition)) {
                 foreach($condition as $key => $value) {
@@ -185,7 +350,37 @@ class Statement implements ExpressionInterface
             $combined[] = '('.implode(' '.$currentOp.' ', $stack).')';
         }
 
-        return 'WHERE '.implode(' AND ', $combined);
+        return 'WHERE '.implode(' ', $combined);
+    }
+
+    protected function processSet($items)
+    {
+        $clauseParts = [];
+        foreach($items as $key => $value) {
+            if (is_int($key)) {
+                $clauseParts[] = $value;
+            }
+            else {
+                $clauseParts[] = $key.' = :set_'.$key;
+            }
+        }
+
+        return 'SET '.implode(',', $clauseParts);
+    }
+
+    protected function processFetch($items)
+    {
+        $clauseParts = [];
+        foreach($items as $key => $value) {
+            if (is_int($key)) {
+                $clauseParts[] = $value;
+            }
+            else {
+                $clauseParts[] = $key.':'.$value;
+            }
+        }
+
+        return 'FETCHPLAN '.implode(',', $clauseParts);
     }
 
     /**
@@ -246,5 +441,27 @@ class Statement implements ExpressionInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Call a virtual method.
+     *
+     * @param string $name The name of the virtual method to call.
+     * @param array $arguments The arguments to pass to the callee.
+     *
+     * @return mixed The result of the call.
+     * @throws \BadMethodCallException If no such method can be found.
+     */
+    public function __call($name, $arguments)
+    {
+        if ($name === 'or') {
+            return $this->where($arguments[0], 'OR');
+        }
+        else if ($name === 'and') {
+            return $this->where($arguments[0], 'AND');
+        }
+        else {
+            throw new \BadMethodCallException(get_called_class().' does not have a method called "'.$name.'"');
+        }
     }
 }
