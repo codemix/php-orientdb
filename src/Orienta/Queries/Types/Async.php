@@ -1,6 +1,6 @@
 <?php
 
-namespace Orienta\Queries;
+namespace Orienta\Queries\Types;
 
 class Async extends Sync
 {
