@@ -11,8 +11,9 @@ use Orienta\Common\ConfigurableInterface;
 use Orienta\Common\ConfigurableTrait;
 use Orienta\Common\MagicInterface;
 use Orienta\Common\MagicTrait;
+use Orienta\Queries\Query;
 use Orienta\Queries\ResultList;
-use Orienta\Queries\Types\Sync;
+use Orienta\Queries\Types\Command;
 use Orienta\Records\DocumentInterface;
 use Orienta\Records\ID;
 use Orienta\Records\RecordInterface;
@@ -224,14 +225,71 @@ class Database implements ConfigurableInterface, MagicInterface
     public function query($query, array $params = [])
     {
         if (!is_object($query)) {
-            $query = Sync::fromConfig([
+            $query = Command::fromConfig([
                 'text' => $query,
                 'params' => $params
             ]);
         }
-        return new ResultList($this, $this->execute('command', [
+        else if ($query instanceof Query) {
+            $query = $query->prepare();
+        }
+        $results = $this->execute('command', [
             'query' => $query
-        ]));
+        ]);
+        return new ResultList($this, $results);
+    }
+
+    /**
+     * Creates a select query.
+     *
+     * @return Query The query object.
+     */
+    public function select()
+    {
+        $query = $this->createQuery();
+        return call_user_func_array([$query, 'select'], func_get_args());
+    }
+
+    /**
+     * Creates an insert query.
+     *
+     * @return Query The query object.
+     */
+    public function insert()
+    {
+        $query = $this->createQuery();
+        return call_user_func_array([$query, 'insert'], func_get_args());
+    }
+
+    /**
+     * Creates an update query.
+     *
+     * @return Query The query object.
+     */
+    public function update()
+    {
+        $query = $this->createQuery();
+        return call_user_func_array([$query, 'update'], func_get_args());
+    }
+
+    /**
+     * Creates a delete query.
+     *
+     * @return Query The query object.
+     */
+    public function delete()
+    {
+        $query = $this->createQuery();
+        return call_user_func_array([$query, 'delete'], func_get_args());
+    }
+
+    /**
+     * Create a query for the database.
+     * @return Query The query object.
+     */
+    public function createQuery()
+    {
+        return new Query($this);
     }
 
     /**

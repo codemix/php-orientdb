@@ -339,7 +339,7 @@ class Statement implements ExpressionInterface
             }
             if (is_array($condition)) {
                 foreach($condition as $key => $value) {
-                    $stack[] = $key.' = :where_'.$i.'_'.$key;
+                    $stack[] = $key.' = :paramwhere'.$i.$key;
                 }
             }
             else {
@@ -361,7 +361,7 @@ class Statement implements ExpressionInterface
                 $clauseParts[] = $value;
             }
             else {
-                $clauseParts[] = $key.' = :set_'.$key;
+                $clauseParts[] = $key.' = :paramset'.$key;
             }
         }
 
@@ -403,7 +403,28 @@ class Statement implements ExpressionInterface
      */
     public function getParams()
     {
-        return $this->params;
+        $params = $this->params;
+        if (isset($this->clauses['where'])) {
+            foreach($this->clauses['where'] as $i => $item) {
+                list($operation, $condition) = $item;
+                if (is_array($condition)) {
+                    foreach($condition as $key => $value) {
+                        $params['paramwhere'.$i.$key] = $value;
+                    }
+                }
+            }
+        }
+        if (isset($this->clauses['set'])) {
+            foreach($this->clauses['set'] as $key => $value) {
+                if (is_int($key)) {
+                    $clauseParts[] = $value;
+                }
+                else {
+                    $params['paramset'.$key] = $value;
+                }
+            }
+        }
+        return $params;
     }
 
 

@@ -95,7 +95,7 @@ class StatementTest extends TestCase
         $statement->select()->from('OUser')->where([
             'name' => 'admin'
         ]);
-        $this->assertEquals('SELECT * FROM OUser WHERE (name = :where_0_name)', $statement->getText());
+        $this->assertEquals('SELECT * FROM OUser WHERE (name = :paramwhere0name)', $statement->getText());
     }
 
     public function testWhereMapMany()
@@ -105,7 +105,7 @@ class StatementTest extends TestCase
             'name' => 'admin',
             'status' => 'ACTIVE'
         ]);
-        $this->assertEquals('SELECT * FROM OUser WHERE (name = :where_0_name AND status = :where_0_status)', $statement->getText());
+        $this->assertEquals('SELECT * FROM OUser WHERE (name = :paramwhere0name AND status = :paramwhere0status)', $statement->getText());
     }
 
     public function testGroupBy()
@@ -209,7 +209,7 @@ class StatementTest extends TestCase
         $statement->update('OUser')->set([
             'status' => 'ACTIVE'
         ]);
-        $this->assertEquals('UPDATE OUser SET status = :set_status', $statement->getText());
+        $this->assertEquals('UPDATE OUser SET status = :paramsetstatus', $statement->getText());
     }
 
     public function testSetArrayMulti()
@@ -219,7 +219,7 @@ class StatementTest extends TestCase
             'status' => 'ACTIVE',
             'foo' => 'bar'
         ]);
-        $this->assertEquals('UPDATE OUser SET status = :set_status,foo = :set_foo', $statement->getText());
+        $this->assertEquals('UPDATE OUser SET status = :paramsetstatus,foo = :paramsetfoo', $statement->getText());
     }
 
     public function testInsert()
@@ -240,7 +240,7 @@ class StatementTest extends TestCase
     {
         $statement = new Statement();
         $statement->insert(['foo' => 'bar'])->into('OUser');
-        $this->assertEquals('INSERT INTO OUser SET foo = :set_foo', $statement->getText());
+        $this->assertEquals('INSERT INTO OUser SET foo = :paramsetfoo', $statement->getText());
     }
 
     public function testDelete()

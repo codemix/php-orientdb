@@ -50,4 +50,19 @@ class DatabaseTest extends DbTestCase
             $this->assertEquals($this->db->classes->ORole, $role->getClass());
         }
     }
+
+
+    public function testSelect()
+    {
+        $query = $this->db->select('*')->from('OUser')->where(['status' => 'ACTIVE']);
+        $results = $query->all();
+        $this->assertGreaterThanOrEqual(3, count($results));
+    }
+
+    public function testInsert()
+    {
+        $query = $this->db->insert('name = "nom"')->into('OUser');
+        $this->assertEquals('INSERT INTO OUser SET name = "nom"', $query->getText());
+    }
+
 }
