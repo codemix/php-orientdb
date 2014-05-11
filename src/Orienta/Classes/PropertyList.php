@@ -72,9 +72,8 @@ class PropertyList implements MapInterface
      */
     protected function instantiateProperty(array $config)
     {
-        $property = new Property();
+        $property = Property::fromConfig($config);
         $property->setClass($this->class);
-        $property->setData($config);
 
         return $property;
     }
