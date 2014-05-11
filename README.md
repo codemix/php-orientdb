@@ -1,4 +1,4 @@
-# Orienta
+# PHP-OrientDB
 
 A fast PHP driver for the OrientDB binary protocol.
 
@@ -8,7 +8,7 @@ A fast PHP driver for the OrientDB binary protocol.
 ### Configuring the client
 
 ```php
-$client = new Orienta\Client([
+$client = new OrientDB\Client([
   'hostname' => 'localhost',
   'port' => 2424,
   'username' => 'root',
