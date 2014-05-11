@@ -7,6 +7,8 @@ namespace Orienta\Queries;
  *
  * @method \Orienta\Queries\Statement or() or($condition) Add an `OR` condition.
  * @method \Orienta\Queries\Statement and() and($condition) Add an `AND` condition.
+ * @method \Orienta\Queries\Statement class() class($expression) Add a `CLASS` clause.
+ * @method \Orienta\Queries\Statement extends() extends($expression) Add an `EXTENDS` clause.
  *
  * @package Orienta\Queries
  */
@@ -28,6 +30,12 @@ class Statement implements ExpressionInterface
     protected $clauseOrder = [
         'begin' => 'BEGIN;',
         'let' => 'LET',
+        'create' => 'CREATE',
+        'edge' => 'EDGE',
+        'vertex' => 'VERTEX',
+        'class' => 'CLASS',
+        'extends' => 'EXTENDS',
+        'cluster' => 'CLUSTER',
         'traverse' => 'TRAVERSE',
         'select' => 'SELECT',
         'update' => 'UPDATE',
@@ -37,6 +45,7 @@ class Statement implements ExpressionInterface
         'to' => 'TO',
         'into' => 'INTO',
         'set' => 'SET',
+        'content' => 'CONTENT',
         'where' => 'WHERE',
         'groupBy' => 'GROUP BY',
         'orderBy' => 'ORDER BY',
@@ -61,6 +70,20 @@ class Statement implements ExpressionInterface
         $args = func_get_args();
         $args[0] = $expression;
         return $this->addClause('select', $args);
+    }
+
+    /**
+     * Add a `TRAVERSE` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function traverse($expression = '*')
+    {
+        $args = func_get_args();
+        $args[0] = $expression;
+        return $this->addClause('traverse', $args);
     }
 
     /**
@@ -108,6 +131,63 @@ class Statement implements ExpressionInterface
 
 
     /**
+     * Add a `CREATE` clause.
+     *
+     *
+     * @param string $entityType The optional entity type to create.
+     *
+     * @return $this The current object.
+     */
+    public function create($entityType = null)
+    {
+        $this->clauses['create'] = [];
+        if ($entityType !== null) {
+            $args = func_get_args();
+            array_shift($args);
+            return $this->addClause(strtolower($entityType), $args);
+        }
+        else {
+            return $this;
+        }
+    }
+
+    /**
+     * Add an `EDGE` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function edge($expression = null)
+    {
+        return $this->addClause('edge', func_get_args());
+    }
+
+    /**
+     * Add a `VERTEX` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function vertex($expression = null)
+    {
+        return $this->addClause('vertex', func_get_args());
+    }
+
+    /**
+     * Add a `CLUSTER` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function cluster($expression)
+    {
+        return $this->addClause('cluster', func_get_args());
+    }
+
+    /**
      * Add a `SET` clause.
      *
      * @param mixed $expression, $... The expressions for this part of the statement.
@@ -117,6 +197,18 @@ class Statement implements ExpressionInterface
     public function set($expression)
     {
         return $this->addClause('set', func_get_args());
+    }
+
+    /**
+     * Add a `CONTENT` clause.
+     *
+     * @param mixed $expression, $... The expressions for this part of the statement.
+     *
+     * @return $this The current object.
+     */
+    public function content($expression)
+    {
+        return $this->addClause('content', [json_encode($expression)]);
     }
 
     /**
@@ -280,11 +372,11 @@ class Statement implements ExpressionInterface
         foreach($this->clauseOrder as $name => $keyword) {
             if (isset($this->clauses[$name])) {
                 $methodName = 'process'.$name;
-                if ($name === 'insert' || $name === 'delete') {
+                if ($name === 'create' || $name === 'insert' || $name === 'delete') {
                     $parts[] = $keyword;
                 }
                 else if (method_exists($this, $methodName)) {
-                    $parts[] = $this->{$methodName}($this->clauses[$name]);
+                    $parts[] = trim($this->{$methodName}($this->clauses[$name]));
                 }
                 else {
                     $clauseParts = [];
@@ -297,7 +389,7 @@ class Statement implements ExpressionInterface
                         }
                     }
 
-                    $parts[] = $keyword.' '.implode(',', $clauseParts);
+                    $parts[] = trim($keyword.' '.implode(',', $clauseParts));
                 }
             }
         }
@@ -320,6 +412,25 @@ class Statement implements ExpressionInterface
         }
 
         return 'SELECT '.implode(',', $clauseParts);
+    }
+
+
+    protected function processTraverse($items)
+    {
+        $clauseParts = [];
+        foreach($items as $key => $value) {
+            if ($value instanceof ExpressionInterface) {
+                $value = '('.$value->getText().')';
+            }
+            if (is_int($key)) {
+                $clauseParts[] = $value;
+            }
+            else {
+                $clauseParts[] = $value.' AS '.$key;
+            }
+        }
+
+        return 'TRAVERSE '.implode(',', $clauseParts);
     }
 
     protected function processWhere($items)
@@ -480,6 +591,12 @@ class Statement implements ExpressionInterface
         }
         else if ($name === 'and') {
             return $this->where($arguments[0], 'AND');
+        }
+        else if ($name === 'class') {
+            return $this->addClause('class', $arguments);
+        }
+        else if ($name === 'extends') {
+            return $this->addClause('extends', $arguments);
         }
         else {
             throw new \BadMethodCallException(get_called_class().' does not have a method called "'.$name.'"');

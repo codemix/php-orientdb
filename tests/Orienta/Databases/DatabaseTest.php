@@ -59,6 +59,16 @@ class DatabaseTest extends DbTestCase
         $this->assertGreaterThanOrEqual(3, count($results));
     }
 
+    public function testTraverse()
+    {
+        $query = $this->db->traverse()->from('OUser');
+        $results = $query->all();
+        $this->assertGreaterThanOrEqual(3, count($results));
+        foreach($results as $result /* @var \Orienta\Records\DocumentInterface $result */) {
+            $this->assertInstanceOf('\Orienta\Records\DocumentInterface', $result);
+        }
+    }
+
     public function testInsert()
     {
         $query = $this->db->insert('name = "nom"')->into('OUser');

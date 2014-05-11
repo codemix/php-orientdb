@@ -250,6 +250,18 @@ class Database implements ConfigurableInterface, MagicInterface
         return call_user_func_array([$query, 'select'], func_get_args());
     }
 
+
+    /**
+     * Creates a traverse query.
+     *
+     * @return Query The query object.
+     */
+    public function traverse()
+    {
+        $query = $this->createQuery();
+        return call_user_func_array([$query, 'traverse'], func_get_args());
+    }
+
     /**
      * Creates an insert query.
      *

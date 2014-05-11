@@ -257,4 +257,67 @@ class StatementTest extends TestCase
         $this->assertEquals('DELETE FROM OUser WHERE (1=1)', $statement->getText());
     }
 
+    public function testCreateClass()
+    {
+        $statement = new Statement();
+        $statement->create()->class('MyClass');
+        $this->assertEquals('CREATE CLASS MyClass', $statement->getText());
+    }
+
+    public function testCreateClassExtends()
+    {
+        $statement = new Statement();
+        $statement->create()->class('MyClass')->extends('ORestricted');
+        $this->assertEquals('CREATE CLASS MyClass EXTENDS ORestricted', $statement->getText());
+    }
+
+    public function testCreateClassExtendsMycluster()
+    {
+        $statement = new Statement();
+        $statement->create()->class('MyClass')->extends('ORestricted')->cluster(1);
+        $this->assertEquals('CREATE CLASS MyClass EXTENDS ORestricted CLUSTER 1', $statement->getText());
+    }
+
+    public function testCreateVertex()
+    {
+        $statement = new Statement();
+        $statement->create()->vertex('V')->set('a=1');
+        $this->assertEquals('CREATE VERTEX V SET a=1', $statement->getText());
+    }
+
+    public function testCreateVertexCluster()
+    {
+        $statement = new Statement();
+        $statement->create()->vertex('V')->cluster('mycluster')->set('a=1');
+        $this->assertEquals('CREATE VERTEX V CLUSTER mycluster SET a=1', $statement->getText());
+    }
+
+    public function testCreateVertexContent()
+    {
+        $statement = new Statement();
+        $statement->create()->vertex('V')->content(['a' => 1]);
+        $this->assertEquals('CREATE VERTEX V CONTENT {"a":1}', $statement->getText());
+    }
+
+    public function testCreateEdge()
+    {
+        $statement = new Statement();
+        $statement->create()->edge('E')->from('#1:1')->to('#1:2');
+        $this->assertEquals('CREATE EDGE E FROM #1:1 TO #1:2', $statement->getText());
+    }
+
+    public function testCreateEdgeCluster()
+    {
+        $statement = new Statement();
+        $statement->create()->edge('E')->cluster('mycluster')->from('#1:1')->to('#1:2');
+        $this->assertEquals('CREATE EDGE E CLUSTER mycluster FROM #1:1 TO #1:2', $statement->getText());
+    }
+
+    public function testCreateEdgeSet()
+    {
+        $statement = new Statement();
+        $statement->create()->edge('E')->from('#1:1')->to('#1:2')->set('a=1');
+        $this->assertEquals('CREATE EDGE E FROM #1:1 TO #1:2 SET a=1', $statement->getText());
+    }
+
 }
