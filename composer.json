@@ -1,8 +1,8 @@
 {
-  "name": "codemix/orienta",
+  "name": "codemix/orientdb",
   "description": "A fast PHP driver for the OrientDB binary protocol.",
   "keywords": ["orientdb", "orient db"],
-  "homepage": "http://github.com/codemix/orienta",
+  "homepage": "http://github.com/codemix/php-orientdb",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -20,6 +20,6 @@
     "phpunit/phpunit": "~3.7.0"
   },
   "autoload": {
-    "psr-4": {"Orienta\\": "src/Orienta"}
+    "psr-4": {"OrientDB\\": "src/OrientDB"}
   }
 }

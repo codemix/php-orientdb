@@ -2,14 +2,14 @@
 
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
 	<testsuites>
-		<testsuite name="Oriento Test Suite">
-			<directory>tests/Orienta/</directory>
+		<testsuite name="OrientDB Test Suite">
+			<directory>tests/OrientDB/</directory>
 		</testsuite>
 	</testsuites>
 
 	<filter>
 		<whitelist>
-			<directory suffix=".php">src/Orienta/</directory>
+			<directory suffix=".php">src/OrientDB/</directory>
 		</whitelist>
 	</filter>
 </phpunit>
