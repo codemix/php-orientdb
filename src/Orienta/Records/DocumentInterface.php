@@ -3,7 +3,7 @@
 namespace Orienta\Records;
 
 
-interface DocumentInterface extends RecordInterface
+interface DocumentInterface extends RecordInterface, \ArrayAccess, \Countable
 {
     /**
      * Sets the attributes for the document.
