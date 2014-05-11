@@ -34,6 +34,26 @@ class ClassTest extends DbTestCase
         $this->assertGreaterThanOrEqual(2, count($errors));
     }
 
+    public function testValidateDocument()
+    {
+        $doc = $this->class->createDocument([
+            'name' => 'Charles',
+            'password' => 'password',
+        ]);
+
+        list($valid, $errors) = $this->class->validate($doc);
+
+        $this->assertFalse($valid);
+        $this->assertEquals(1, count($errors));
+
+        $doc->status = 'ACTIVE';
+
+        list($valid, $errors) = $this->class->validate($doc);
+
+        $this->assertTrue($valid);
+        $this->assertEquals([], $errors);
+    }
+
     protected function setUp()
     {
         parent::setUp();
