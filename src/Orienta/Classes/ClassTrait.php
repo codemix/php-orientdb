@@ -136,6 +136,27 @@ trait ClassTrait
 
 
     /**
+     * Validate the given value.
+     *
+     * @param mixed $value The value to validate.
+     *
+     * @return array An array containing a boolean which is true if the value is valid,
+     *                followed by an array of validation errors, if any.
+     */
+    public function validate($value)
+    {
+        $allErrors = [];
+        foreach($this->getProperties() as $name => $property /* @var Property $property */) {
+            list($isValid, $errors) = $property->validate(isset($value[$name]) ? $value[$name] : null);
+            if (!$isValid) {
+                $allErrors = array_merge($allErrors, $errors);
+            }
+        }
+        return [count($allErrors) === 0, $allErrors];
+    }
+
+
+    /**
      * Get an attribute with the given name.
      *
      * @param string $name The name of the attribute to get.

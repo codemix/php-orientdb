@@ -3,6 +3,7 @@
 namespace Orienta\Classes;
 
 use Orienta\Databases\Database;
+use Orienta\Validation\ValidatorInterface;
 
 /**
  *
@@ -15,7 +16,7 @@ use Orienta\Databases\Database;
  * @property PropertyList $properties
  *
  */
-interface ClassInterface
+interface ClassInterface extends ValidatorInterface
 {
     /**
      * Sets the Database

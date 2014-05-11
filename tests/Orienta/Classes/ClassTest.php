@@ -24,6 +24,16 @@ class ClassTest extends DbTestCase
         $this->assertInstanceOf('Orienta\Classes\Property', $this->class->getProperties()->name);
     }
 
+    public function testValidate()
+    {
+        list($valid, $errors) = $this->class->validate([
+            'name' => 'Charles',
+        ]);
+
+        $this->assertFalse($valid);
+        $this->assertGreaterThanOrEqual(2, count($errors));
+    }
+
     protected function setUp()
     {
         parent::setUp();
