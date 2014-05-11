@@ -18,9 +18,11 @@ class Document implements DocumentInterface, ConfigurableInterface
      * @param Database $database The database the document belongs to.
      * @param array $config The configuration for the record.
      */
-    public function __construct(Database $database, array $config = [])
+    public function __construct(Database $database = null, array $config = [])
     {
         $this->database = $database;
         $this->configure($config);
     }
+
+
 }
