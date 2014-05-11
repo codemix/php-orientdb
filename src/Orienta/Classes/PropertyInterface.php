@@ -13,6 +13,8 @@ namespace Orienta\Classes;
  * @property int|null $min The minimum value, if any.
  * @property int|null $max The maximum value, if any.
  * @property string $regexp The regular expression for this property.
+ * @property string $collate The collation for this property.
+ * @property string $linkedClass The linked class for this property.
  * @property array $customFields The custom fields for the property.
  *
  * @package Orienta\Classes

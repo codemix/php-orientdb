@@ -2,31 +2,69 @@
 
 namespace Orienta\Classes;
 
-/**
- * @property string $name The name of the property.
- * @property int $type The property type.
- * @property bool $mandatory true if the property is mandatory.
- * @property bool $readonly true if the property is read only.
- * @property bool $notNull true if the property cannot contain null values.
- * @property int|null $min The minimum value, if any.
- * @property int|null $max The maximum value, if any.
- * @property string $regexp The regular expression for this property.
- * @property array $customFields The custom fields for the property.
- *
- * @package Orienta\Classes
- */
+use Orienta\Validation\ErrorMessage;
+
 trait PropertyTrait
 {
+    /**
+     * @var string The name of the property.
+     */
+    public $name;
+
+    /**
+     * @var int The property type.
+     */
+    public $type;
+
+    /**
+     * @var bool Whether the property is mandatory.
+     */
+    public $mandatory;
+
+    /**
+     * @var bool Whether the property is read only.
+     */
+    public $readonly;
+
+    /**
+     * @var bool Whether the property cannot contain null values.
+     */
+    public $notNull;
+
+    /**
+     * @var int The minimum property value.
+     */
+    public $min;
+
+    /**
+     * @var int The maximum property value.
+     */
+    public $max;
+
+    /**
+     * @var string The regular expression that the property value should match.
+     */
+    public $regexp;
+
+    /**
+     * @var string The collation for this property.
+     */
+    public $collate;
+
+    /**
+     * @var string The linked class for this property.
+     */
+    public $linkedClass;
+
+    /**
+     * @var array The custom fields for the property.
+     */
+    public $customFields = [];
 
     /**
      * @var ClassInterface The class this property belongs to.
      */
     protected $class;
-
-    /**
-     * @var array The data for the property.
-     */
-    protected $data = [];
 
     /**
      * Sets the Class
@@ -51,76 +89,75 @@ trait PropertyTrait
     }
 
     /**
-     * Sets the Data
+     * Validate the given value.
      *
-     * @param array $data
+     * @param mixed $value The value to validate.
      *
-     * @return $this the current object
+     * @return array An array containing a boolean which is true if the value is valid,
+     *                followed by an array of validation errors, if any.
      */
-    public function setData($data)
+    public function validate($value)
     {
-        $this->data = $data;
-        return $this;
-    }
-
-    /**
-     * Gets the Data
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Get an attribute with the given name.
-     *
-     * @param string $name The name of the attribute to get.
-     *
-     * @return mixed The value of the attribute.
-     * @throws \OutOfBoundsException
-     */
-    public function __get($name)
-    {
-        if (array_key_exists($name, $this->data)) {
-            return $this->data[$name];
+        if ($this->mandatory && ($value === null || $value === '')) {
+            return [false, [$this->validationError(ErrorMessage::MANDATORY)]];
         }
-        else {
-            throw new \OutOfBoundsException(get_called_class().' does not have a property called "'.$name.'"');
+        if ($this->notNull && $value === null) {
+            return [false, [$this->validationError(ErrorMessage::NOT_NULL)]];
         }
+        else if (!$this->notNull && $value === null) {
+            return [true, []];
+        }
+        $errors = [];
+        if ($this->regexp && !$this->validateRegExp($value)) {
+            $errors[] = $this->validationError(ErrorMessage::BAD_PATTERN);
+        }
+        if ($this->min > 0 && !$this->validateMin($value)) {
+            $errors[] = $this->validationError(ErrorMessage::MIN_VALUE, [
+                '{min}' => $this->min
+            ]);
+        }
+        if ($this->max > 0 && !$this->validateMax($value)) {
+            $errors[] = $this->validationError(ErrorMessage::MAX_VALUE, [
+                '{max}' => $this->max
+            ]);
+        }
+        return [count($errors) === 0, $errors];
+    }
+
+    protected function validateType($value)
+    {
+        // @fixme implementation
+        return true;
+    }
+
+    protected function validateMin($value)
+    {
+        // @todo type check?
+        return $value >= $this->min;
+    }
+
+    protected function validateMax($value)
+    {
+        return $value <= $this->max;
+    }
+
+    protected function validateRegExp($value)
+    {
+        return preg_match('/'.$this->regexp.'/', $value);
     }
 
     /**
-     * Set an attribute with the given name.
+     * Return a validation error message.
      *
-     * @param string $name The attribute name.
-     * @param mixed $value The attribute value.
+     * @param string $message The error message.
+     * @param array $params The parameters for the message.
+     *
+     * @return string The processed message.
      */
-    public function __set($name, $value)
+    protected function validationError($message, array $params = [])
     {
-        $this->data[$name] = $value;
-    }
-
-    /**
-     * Determine whether the attribute with the given name exists.
-     *
-     * @param string $name The name of the attribute.
-     *
-     * @return bool true if the attribute exists
-     */
-    public function __isset($name)
-    {
-        return isset($this->data[$name]);
-    }
-
-    /**
-     * Unset the attribute with the given name.
-     *
-     * @param string $name The name of the attribute to unset.
-     */
-    public function __unset($name)
-    {
-        unset($this->data[$name]);
+        $params['{property}'] = $this->name;
+        return strtr($message, $params);
     }
 
 }
