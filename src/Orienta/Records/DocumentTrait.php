@@ -37,6 +37,9 @@ trait DocumentTrait
         return $this->attributes;
     }
 
+    /**
+     * Deserialize the attributes for the document.
+     */
     protected function deserializeAttributes()
     {
         if (!strlen($this->bytes)) {
@@ -97,11 +100,12 @@ trait DocumentTrait
      */
     public function recordSerialize()
     {
-        $meta = [
-            '@rid' => $this->id
-        ];
+        $attributes = $this->getAttributes();
+        if (($class = $this->getClass()) !== null) {
+            $attributes['@class'] = $class->name;
+        }
 
-        return array_merge($meta, $this->attributes);
+        return $attributes;
     }
 
     /**

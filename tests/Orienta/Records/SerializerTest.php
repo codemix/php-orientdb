@@ -2,6 +2,7 @@
 
 namespace Orienta\Records;
 
+use Orienta\Databases\MockDatabase;
 use Orienta\TestCase;
 
 class SerializerTest extends TestCase
@@ -76,5 +77,30 @@ class SerializerTest extends TestCase
         $input = ['a' => 1, 'b' => 2, 'c' => 3];
         $output = Serializer::serialize($input);
         $this->assertEquals('{"a":1,"b":2,"c":3}', $output);
+    }
+
+    public function testSerializeDocument()
+    {
+        $input = new Document(new MockDatabase());
+        $input->setClass('OUser');
+        $input->setAttributes([
+            'name' => 'Charles',
+            'status' => 'ACTIVE'
+        ]);
+        $output = Serializer::serialize($input);
+        $this->assertEquals('OUser@name:"Charles",status:"ACTIVE"', $output);
+    }
+
+    public function testSerializeEmbeddedDocument()
+    {
+        $doc = new Document(new MockDatabase());
+        $doc->setClass('OUser');
+        $doc->setAttributes([
+            'name' => 'Charles',
+            'status' => 'ACTIVE'
+        ]);
+        $input = ['doc' => $doc];
+        $output = Serializer::serialize($input);
+        $this->assertEquals('{"doc":(OUser@name:"Charles",status:"ACTIVE")}', $output);
     }
 }
