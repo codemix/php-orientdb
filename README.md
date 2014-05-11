@@ -107,3 +107,8 @@ foreach($db->classes as $name => $class) {
   echo $name."\n";
 }
 ```
+
+
+# License
+
+MIT, see [LICENSE.md](./LICENSE.md).
