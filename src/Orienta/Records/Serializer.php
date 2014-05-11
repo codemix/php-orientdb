@@ -9,9 +9,11 @@ class Serializer
      *
      * @param mixed $value The value to serialize.
      *
+     * @param bool $embedded Whether this is a value embedded in another.
+     *
      * @return string The serialized value.
      */
-    public static function serialize($value)
+    public static function serialize($value, $embedded = false)
     {
         if ($value === null) {
             return 'null';
@@ -32,13 +34,37 @@ class Serializer
             return self::serializeArray($value);
         }
         else if ($value instanceof SerializableInterface) {
-            return self::serialize($value->recordSerialize());
+            return self::serializeDocument($value, $embedded);
         }
         else if ($value instanceof \DateTime) {
             return $value->getTimestamp().'t';
         }
         else {
             return '';
+        }
+    }
+
+    protected static function serializeDocument(SerializableInterface $document, $embedded = false)
+    {
+        $array = $document->recordSerialize();
+        $segments = [];
+        foreach($array as $key => $value)
+        {
+            if (substr($key, 0, 1) === '@') {
+                continue;
+            }
+            $segments[] = $key.':'.self::serialize($value, true);
+        }
+
+        $assembled = implode(',',$segments);
+        if (isset($array['@class'])) {
+            $assembled = $array['@class'].'@'.$assembled;
+        }
+        if ($embedded) {
+            return '('.$assembled.')';
+        }
+        else {
+            return $assembled;
         }
     }
 
@@ -66,7 +92,7 @@ class Serializer
             else {
                 $keys[] = '"'.$key.'"';
             }
-            $values[] = self::serialize($value);
+            $values[] = self::serialize($value, true);
         }
         if ($isMap) {
             $parts = [];
