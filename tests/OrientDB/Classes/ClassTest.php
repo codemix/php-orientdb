@@ -3,6 +3,7 @@
 namespace OrientDB\Classes;
 
 use OrientDB\DbTestCase;
+use OrientDB\Records\ID;
 
 class ClassTest extends DbTestCase
 {
@@ -52,6 +53,28 @@ class ClassTest extends DbTestCase
 
         $this->assertTrue($valid);
         $this->assertEquals([], $errors);
+    }
+
+    public function testValidateReadOnly()
+    {
+        $doc = $this->class->createDocument([
+            'name' => 'Charles',
+            'password' => 'password',
+            'status' => 'ACTIVE'
+        ]);
+
+        $doc->setId(new ID(-1, -1));
+
+        list($valid, $errors) = $this->class->validate($doc);
+
+        $this->assertTrue($valid);
+        $this->assertEquals([], $errors);
+
+        $this->class->properties->status->readonly = true;
+        list($valid, $errors) = $this->class->validate($doc);
+
+        $this->assertFalse($valid);
+        $this->assertEquals(1, count($errors));
     }
 
     protected function setUp()

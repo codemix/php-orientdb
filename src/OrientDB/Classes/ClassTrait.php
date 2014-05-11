@@ -3,6 +3,8 @@
 namespace OrientDB\Classes;
 
 use OrientDB\Databases\Database;
+use OrientDB\Records\DocumentInterface;
+use OrientDB\Validation\ErrorMessage;
 
 /**
  *
@@ -147,12 +149,31 @@ trait ClassTrait
     {
         $allErrors = [];
         foreach($this->getProperties() as $name => $property /* @var Property $property */) {
-            list($isValid, $errors) = $property->validate(isset($value[$name]) ? $value[$name] : null);
-            if (!$isValid) {
-                $allErrors = array_merge($allErrors, $errors);
+            if ($property->readonly && $value instanceof DocumentInterface && !$value->getIsNew() && isset($value[$name])) {
+                $allErrors[] = $this->validationError(ErrorMessage::READ_ONLY, ['{property}' => $name]);
+            }
+            else {
+                list($isValid, $errors) = $property->validate(isset($value[$name]) ? $value[$name] : null);
+                if (!$isValid) {
+                    $allErrors = array_merge($allErrors, $errors);
+                }
             }
         }
         return [count($allErrors) === 0, $allErrors];
+    }
+
+    /**
+     * Return a validation error message.
+     *
+     * @param string $message The error message.
+     * @param array $params The parameters for the message.
+     *
+     * @return string The processed message.
+     */
+    protected function validationError($message, array $params = [])
+    {
+        $params['{class}'] = $this->name;
+        return strtr($message, $params);
     }
 
     /**
