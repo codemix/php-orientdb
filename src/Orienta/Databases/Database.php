@@ -312,7 +312,7 @@ class Database implements ConfigurableInterface, MagicInterface
      *
      * @return RecordInterface The instantiated record.
      */
-    public function createRecordInstance($orientClass, array $properties = [])
+    public function createRecordInstance($orientClass = null, array $properties = [])
     {
         return $this->createRecordInstanceInternal($orientClass, 'Orienta\Records\Record', $properties);
     }
@@ -325,7 +325,7 @@ class Database implements ConfigurableInterface, MagicInterface
      *
      * @return DocumentInterface The instantiated record.
      */
-    public function createDocumentInstance($orientClass, array $properties = [])
+    public function createDocumentInstance($orientClass = null, array $properties = [])
     {
         return $this->createRecordInstanceInternal($orientClass, 'Orienta\Records\Document', $properties);
     }
@@ -341,6 +341,9 @@ class Database implements ConfigurableInterface, MagicInterface
      */
     protected function createRecordInstanceInternal($orientClass, $defaultPHPClass, array $properties)
     {
+        if ($orientClass === null) {
+            return new $defaultPHPClass($this, $properties);
+        }
         if ($orientClass instanceof ClassInterface) {
             $orientClass = $orientClass->name;
         }
