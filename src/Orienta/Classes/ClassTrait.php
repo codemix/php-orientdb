@@ -155,6 +155,18 @@ trait ClassTrait
         return [count($allErrors) === 0, $allErrors];
     }
 
+    /**
+     * Create a document instance for this class.
+     *
+     * @param array $properties The properties for the instance.
+     *
+     * @return \Orienta\Records\DocumentInterface
+     */
+    public function createDocument(array $properties = [])
+    {
+        return $this->getDatabase()->createDocumentInstance($this, ['attributes' => $properties]);
+    }
+
 
     /**
      * Get an attribute with the given name.

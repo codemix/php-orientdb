@@ -62,4 +62,13 @@ interface ClassInterface extends ValidatorInterface
      * @return \Orienta\Classes\PropertyList
      */
     public function getProperties();
+
+    /**
+     * Create a document instance for this class.
+     *
+     * @param array $properties The properties for the instance.
+     *
+     * @return \Orienta\Records\DocumentInterface
+     */
+    public function createDocument(array $properties = []);
 }
