@@ -1,4 +1,5 @@
 # PHP-OrientDB
+[![Build Status](https://travis-ci.org/codemix/oriento.svg?branch=0.3.0)](https://travis-ci.org/codemix/oriento)
 
 A fast PHP driver for the OrientDB binary protocol.
 
