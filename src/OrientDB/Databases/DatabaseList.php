@@ -11,9 +11,6 @@ class DatabaseList implements MapInterface
 {
     use MapTrait;
 
-    protected $items;
-
-
     /**
      * @var Client The client the list of databases belongs to.
      */
