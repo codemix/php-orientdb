@@ -4,6 +4,10 @@
 A fast PHP driver for the OrientDB binary protocol.
 
 
+> **status: alpha**
+> This is work in progress, alpha quality software.
+> Please [report any bugs](https://github.com/codemix/oriento/issues) you find so that we can improve the library for everyone.
+
 ## Usage
 
 ### Configuring the client
