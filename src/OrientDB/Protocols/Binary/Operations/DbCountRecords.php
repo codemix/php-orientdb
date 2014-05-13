@@ -10,11 +10,6 @@ class DbCountRecords extends AbstractDbOperation
     public $opCode = 9;
 
     /**
-     * @var int the sessionId for the db to be closed
-     */
-    public $sessionId = -1;
-
-    /**
      * @var string The database storage type.
      */
     public $storage = 'plocal';
