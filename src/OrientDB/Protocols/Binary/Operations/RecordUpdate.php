@@ -57,7 +57,6 @@ class RecordUpdate extends AbstractDbOperation
     protected function read()
     {
         $this->record->setVersion($this->readInt());
-        $totalChanges = $this->readInt();
         return $this->record;
     }
 

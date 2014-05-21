@@ -6,9 +6,6 @@ use OrientDB\DbTestCase;
 
 class DocumentTest extends DbTestCase
 {
-
-    protected static $dbStorage = 'plocal';
-
     public function testArrayAccess()
     {
         $doc = new Document(null, [

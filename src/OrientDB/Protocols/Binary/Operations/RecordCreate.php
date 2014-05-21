@@ -67,7 +67,6 @@ class RecordCreate extends AbstractDbOperation
     {
         $this->record->setId(new ID($this->cluster, $this->readLong()));
         $this->record->setVersion($this->readInt());
-        $totalChanges = $this->readInt();
 
         return $this->record;
     }
