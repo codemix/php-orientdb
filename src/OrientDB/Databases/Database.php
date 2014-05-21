@@ -236,6 +236,9 @@ class Database implements ConfigurableInterface, MagicInterface
         $results = $this->execute('command', [
             'query' => $query
         ]);
+        if (!is_array($results)) {
+            $results = [$results];
+        }
         return new ResultList($this, $results);
     }
 

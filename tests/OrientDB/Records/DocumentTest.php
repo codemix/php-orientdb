@@ -3,7 +3,6 @@
 namespace OrientDB\Records;
 
 use OrientDB\DbTestCase;
-use OrientDB\Exceptions\Exception;
 
 class DocumentTest extends DbTestCase
 {
@@ -25,14 +24,19 @@ class DocumentTest extends DbTestCase
         $this->assertEquals(2, count($doc));
     }
 
-    public function tessstLoad()
+    public function testLoad()
     {
-        $doc = static::$db->getClass('OUser')->load(1);
+        $class = static::$db->getClass('OUser');
+        $doc = $class->load(0);
+        $this->assertInstanceOf('OrientDB\Records\DocumentInterface', $doc);
+        $this->assertEquals($class->defaultClusterId, $doc->getId()->cluster);
+        $this->assertEquals(0, $doc->getId()->position);
     }
 
     public function testLifecycle()
     {
-        $doc = static::$db->getClass('OUser')->createDocument();
+        $class = static::$db->getClass('OUser');
+        $doc = $class->createDocument();
 
         $doc->name = "testuser";
         $doc->password = "testpassword";
@@ -40,15 +44,31 @@ class DocumentTest extends DbTestCase
 
         $this->assertTrue($doc->getIsNew());
 
-        $this->assertTrue($doc->save());
+        $doc->save();
+
+
         $this->assertFalse($doc->getIsNew());
 
         $this->assertGreaterThan(2, $doc->getId()->position);
 
+        $version = $doc->getVersion();
 
         $doc->name = "testuser2";
 
-        $this->assertTrue($doc->save());
+        $doc->save();
+
+        $this->assertGreaterThan($version, $doc->getVersion());
+        $clone = $class->load($doc->getId());
+        $this->assertInstanceOf('OrientDB\Records\DocumentInterface', $clone);
+        $this->assertEquals($doc->name, $clone->name);
+        $this->assertFalse($doc->getIsDeleted());
+
+        $doc->delete();
+
+        $this->assertTrue($doc->getIsDeleted());
+
+        $clone = $class->load($doc->getId());
+        $this->assertNull($clone);
     }
 
 }

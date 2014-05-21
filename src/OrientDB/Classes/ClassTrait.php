@@ -4,6 +4,8 @@ namespace OrientDB\Classes;
 
 use OrientDB\Databases\Database;
 use OrientDB\Records\DocumentInterface;
+use OrientDB\Records\ID;
+use OrientDB\Records\RecordInterface;
 use OrientDB\Validation\ErrorMessage;
 
 /**
@@ -185,9 +187,37 @@ trait ClassTrait
      */
     public function createDocument(array $properties = [])
     {
-        return $this->getDatabase()->createDocumentInstance($this, ['attributes' => $properties]);
+        return $this->getDatabase()->createDocumentInstance($this, [
+            'class' => $this,
+            'attributes' => $properties
+        ]);
     }
 
+
+    /**
+     * Load a record for this class.
+     *
+     * @param mixed $id The record id or position.
+     * @param array $options The options for the command.
+     *
+     * @return RecordInterface|DocumentInterface|null The loaded record instance, or null if the record doesn't exist.
+     */
+    public function load($id, array $options = [])
+    {
+        if (is_numeric($id)) {
+            $options['cluster'] = $this->defaultClusterId;
+            $options['position'] = $id;
+        }
+        else {
+            if (!($id instanceof ID)) {
+                $id = new ID($id);
+            }
+            $options['cluster'] = $id->cluster === null ? $this->defaultClusterId : $id->cluster;
+            $options['position'] = $id->position;
+        }
+
+        return $this->getDatabase()->execute('recordLoad', $options);
+    }
 
     /**
      * Get an attribute with the given name.

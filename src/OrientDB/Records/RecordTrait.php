@@ -6,6 +6,7 @@ namespace OrientDB\Records;
 use OrientDB\Classes\ClassInterface;
 use OrientDB\Common\MagicTrait;
 use OrientDB\Databases\Database;
+use OrientDB\Exceptions\Exception;
 
 trait RecordTrait
 {
@@ -36,6 +37,11 @@ trait RecordTrait
      * @var Database The database the record belongs to.
      */
     protected $database;
+
+    /**
+     * @var bool Whether the record has been deleted.
+     */
+    protected $isDeleted = false;
 
 
     /**
@@ -163,6 +169,18 @@ trait RecordTrait
     }
 
     /**
+     * Determine whether the record has been deleted from the database.
+     *
+     * @return boolean true if the record has been deleted.
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
+    }
+
+
+
+    /**
      * Return a representation of the class that can be serialized as an
      * OrientDB record.
      *
@@ -191,6 +209,66 @@ trait RecordTrait
         ];
 
         return $meta;
+    }
+
+    /**
+     * Save the record to the database.
+     * @return $this The current record, saved.
+     */
+    public function save()
+    {
+        if ($this->getIsNew()) {
+            $this->insert();
+        }
+        else {
+            $this->update();
+        }
+        $this->isDeleted = false;
+        return $this;
+    }
+
+    /**
+     * Insert the record into the database.
+     */
+    protected function insert()
+    {
+        $cluster = isset($this->id) ? $this->id->cluster : $this->getClass()->defaultClusterId;
+
+        $db = $this->getDatabase();
+        $db->execute('recordCreate', [
+            'record' => $this,
+            'cluster' => $cluster
+        ]);
+    }
+
+    /**
+     * Update the existing record in the database.
+     */
+    protected function update()
+    {
+        $this->getDatabase()->execute('recordUpdate', [
+            'record' => $this
+        ]);
+    }
+
+
+    /**
+     * Deletes the record.
+     *
+     * @return $this The current record, now marked as deleted.
+     * @throws \OrientDB\Exceptions\Exception If the record could not be deleted.
+     */
+    public function delete()
+    {
+        if ($this->getIsNew()) {
+            throw new Exception('Cannot delete an unsaved record.');
+        }
+        else if ($this->isDeleted) {
+            throw new Exception('Cannot delete a record that has already been deleted.');
+        }
+        $result = $this->getDatabase()->delete($this->getId())->limit(1)->scalar();
+        $this->isDeleted = (bool) $result;
+        return $this;
     }
 
 }
