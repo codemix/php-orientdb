@@ -61,6 +61,7 @@ odb_download_via_website () {
   ODB_PACKAGE_URL="http://www.orientdb.org/portal/function/portal/download/${DOWN_USER}/%20/%20/%20/%20/unknown/${ODB_PACKAGE}.${ODB_PACKAGE_EXT}/false/false"
   ODB_C_PACKAGE=${ODB_PACKAGE}.${ODB_PACKAGE_EXT}
 
+  echo "Downloading from $ODB_PACKAGE_URL"
   odb_download $ODB_PACKAGE_URL $CI_DIR
   ODB_PACKAGE_PATH="${CI_DIR}/${ODB_PACKAGE}.${ODB_PACKAGE_EXT}"
 
