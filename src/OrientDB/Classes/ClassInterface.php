@@ -3,6 +3,8 @@
 namespace OrientDB\Classes;
 
 use OrientDB\Databases\Database;
+use OrientDB\Records\DocumentInterface;
+use OrientDB\Records\RecordInterface;
 use OrientDB\Validation\ValidatorInterface;
 
 /**
@@ -71,4 +73,14 @@ interface ClassInterface extends ValidatorInterface
      * @return \OrientDB\Records\DocumentInterface
      */
     public function createDocument(array $properties = []);
+
+    /**
+     * Load a record for this class.
+     *
+     * @param mixed $id The record id or position.
+     * @param array $options The options for the command.
+     *
+     * @return RecordInterface|DocumentInterface|null The loaded record instance, or null if the record doesn't exist.
+     */
+    public function load($id, array $options = []);
 }

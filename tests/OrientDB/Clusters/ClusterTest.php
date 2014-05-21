@@ -15,7 +15,7 @@ class ClusterTest extends DbTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->cluster = $this->db->getCluster('ouser');
+        $this->cluster = static::$db->getCluster('ouser');
     }
 
 

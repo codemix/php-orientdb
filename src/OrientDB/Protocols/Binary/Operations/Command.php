@@ -64,7 +64,9 @@ class Command extends AbstractDbOperation
                         $collection[] = $this->normalizeRecord($item);
                     }
                     $results[] = $collection;
-                break;
+                    break;
+                default:
+                    throw new Exception('Unknown payload type: '.$payload['type']);
             }
         }
         if (count($results) === 1) {

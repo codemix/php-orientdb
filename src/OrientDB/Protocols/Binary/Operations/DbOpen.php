@@ -23,7 +23,7 @@ class DbOpen extends AbstractOperation
     /**
      * @var int the maximum known protocol version
      */
-    public $protocolVersion = 20;
+    public $protocolVersion = 19;
 
     /**
      * @var string the name of the database to open.

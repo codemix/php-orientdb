@@ -60,4 +60,9 @@ class ResultList implements ListInterface
     {
         return isset($this->items[0]) ? $this->items[0] : null;
     }
+
+    public function toArray()
+    {
+        return $this->items;
+    }
 }

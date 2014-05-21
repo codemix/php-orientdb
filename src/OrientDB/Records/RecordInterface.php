@@ -75,5 +75,27 @@ interface RecordInterface extends SerializableInterface, \JsonSerializable, Magi
      */
     public function getIsNew();
 
+    /**
+     * Determine whether the record has been deleted from the database.
+     *
+     * @return boolean true if the record has been deleted.
+     */
+    public function getIsDeleted();
+
+    /**
+     * Save the record to the database.
+     * @return $this The current record, saved.
+     */
+    public function save();
+
+
+    /**
+     * Deletes the record.
+     *
+     * @return $this The current record, now marked as deleted.
+     * @throws \OrientDB\Exceptions\Exception If the record could not be deleted.
+     */
+    public function delete();
+
 
 }

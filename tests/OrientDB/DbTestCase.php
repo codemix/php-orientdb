@@ -13,44 +13,38 @@ class DbTestCase extends TestCase implements MagicInterface
     /**
      * @var Client
      */
-    public $client;
+    public static $client;
 
     /**
      * @var Database
      */
-    public $db;
+    public static $db;
 
-    /**
-     * @var string
-     */
-    private $dbName;
+
+    protected static $dbStorage = 'memory';
 
     /**
      * Gets the DbName
      * @return string
      */
-    public function getDbName()
+    public static function getDbName()
     {
-        if ($this->dbName === null) {
-            $this->dbName = strtolower(str_replace('\\','_', get_called_class()));
-        }
-        return $this->dbName;
+        return strtolower(str_replace('\\','_', get_called_class()));
     }
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        $this->client = $this->createClient();
-        if ($this->client->getDatabases()->exists($this->getDbName(), 'memory')) {
-            $this->client->getDatabases()->drop($this->getDbName(), 'memory');
+        static::$client = static::createClient();
+        if (static::$client->getDatabases()->exists(static::getDbName(), static::$dbStorage)) {
+            static::$client->getDatabases()->drop(static::getDbName(), static::$dbStorage);
         }
-        $this->client->getDatabases()->create($this->getDbName(), 'memory');
-        $this->db = $this->client->getDatabase($this->getDbName());
+        static::$db = static::$client->getDatabases()->create(static::getDbName(), static::$dbStorage);
     }
 
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        if ($this->client->getDatabases()->exists($this->getDbName(), 'memory')) {
-            $this->client->getDatabases()->drop($this->getDbName(), 'memory');
+        if (static::$client->getDatabases()->exists(static::getDbName(), static::$dbStorage)) {
+            static::$client->getDatabases()->drop(static::getDbName(), static::$dbStorage);
         }
     }
 
