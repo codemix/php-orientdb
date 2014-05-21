@@ -75,4 +75,11 @@ class DatabaseTest extends DbTestCase
         $this->assertEquals('INSERT INTO OUser SET name = "nom"', $query->getText());
     }
 
+    public function testDbCountRecord()
+    {
+        $result = $this->db->execute('dbCountRecords', [
+            'storage' => 'memory'
+        ]);
+        $this->assertGreaterThan(0, $result);
+    }
 }
