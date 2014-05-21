@@ -80,7 +80,7 @@ class ClassTest extends DbTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->class = $this->db->getClass('OUser');
+        $this->class = static::$db->getClass('OUser');
     }
 
 }

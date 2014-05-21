@@ -7,14 +7,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * @return array the test server config
      */
-    protected function getConfig()
+    protected static function getConfig()
     {
         return json_decode(file_get_contents(__DIR__.'/../test-server.json'), true);
     }
 
-    protected function createClient()
+    protected static function createClient()
     {
-        $config = $this->getConfig();
+        $config = static::getConfig();
         $client = new Client();
         $client->configure([
             'username' => $config['username'],
